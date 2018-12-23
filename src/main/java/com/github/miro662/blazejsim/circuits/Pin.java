@@ -1,5 +1,7 @@
 package com.github.miro662.blazejsim.circuits;
 
+import com.github.miro662.blazejsim.simulation.Evaluable;
+import com.github.miro662.blazejsim.simulation.LogicState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -8,7 +10,7 @@ import java.io.Serializable;
 /**
  * Base class for all pins that can be parts of entity
  */
-public class Pin implements Serializable {
+public class Pin implements Serializable, Evaluable {
     private Entity entity;
     private Connection connection;
 

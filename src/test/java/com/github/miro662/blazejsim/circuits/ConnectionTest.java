@@ -1,8 +1,9 @@
 package com.github.miro662.blazejsim.circuits;
 
+import com.github.miro662.blazejsim.simulation.LogicState;
+import com.github.miro662.blazejsim.simulation.SimulationState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,71 +16,88 @@ public class ConnectionTest {
     }
 
     @Test
-    public void testConnectInput() {
-        Input input = mock(Input.class);
-        connection.connectInput(input);
-
-        assertEquals(connection.getInput(), input);
-        verify(input).connect(connection);
-    }
-
-    @Test
-    public void testConnectInputWhenOtherInputConnected() {
-        Input oldInput = mock(Input.class);
-        connection.connectInput(oldInput);
-        Input newInput = mock(Input.class);
-        connection.connectInput(newInput);
-
-        verify(oldInput).disconnect();
-        assertEquals(connection.getInput(), newInput);
-        verify(newInput).connect(connection);
-    }
-
-    @Test
-    public void testDisconnectInput() {
-        Input input = mock(Input.class);
-        connection.connectInput(input);
-        connection.disconnectInput();
-
-        verify(input).disconnect();
-        assertNull(connection.getInput());
-    }
-
-    @Test
-    public void testDisconnectInputWhenNoInputConnected() {
-        assertNull(connection.getInput());
-        connection.disconnectInput();
-    }
-
-    @Test
-    public void testConnectOutput() {
+    void connectOutput() {
         Output output = mock(Output.class);
         connection.connectOutput(output);
 
-        assertTrue(connection.getOutputs().contains(output));
+        assertEquals(connection.getOutput(), output);
         verify(output).connect(connection);
     }
 
     @Test
-    public void testConnectAnotherOutput() {
+    void connectOutputWhenOtherOutputConnected() {
         Output oldOutput = mock(Output.class);
         connection.connectOutput(oldOutput);
         Output newOutput = mock(Output.class);
         connection.connectOutput(newOutput);
 
-        assertTrue(connection.getOutputs().contains(oldOutput));
-        assertTrue(connection.getOutputs().contains(newOutput));
-        verify(oldOutput, never()).disconnect();
+        verify(oldOutput).disconnect();
+        assertEquals(connection.getOutput(), newOutput);
         verify(newOutput).connect(connection);
     }
 
     @Test
-    public void testDisconnectOutput() {
+    void disconnectOutput() {
         Output output = mock(Output.class);
         connection.connectOutput(output);
-        connection.disconnectOutput(output);
+        connection.disconnectOutput();
 
-        assertFalse(connection.getOutputs().contains(output));
         verify(output).disconnect();
+        assertNull(connection.getOutput());
+    }
+
+    @Test
+    void disconnectOutputWhenNoOutputConnected() {
+        assertNull(connection.getOutput());
+        connection.disconnectOutput();
+    }
+
+    @Test
+    void connectInput() {
+        Input input = mock(Input.class);
+        connection.connectInput(input);
+
+        assertTrue(connection.getInputs().contains(input));
+        verify(input).connect(connection);
+    }
+
+    @Test
+    void connectAnotherInput() {
+        Input oldInput = mock(Input.class);
+        connection.connectInput(oldInput);
+        Input newInput = mock(Input.class);
+        connection.connectInput(newInput);
+
+        assertTrue(connection.getInputs().contains(oldInput));
+        assertTrue(connection.getInputs().contains(newInput));
+        verify(oldInput, never()).disconnect();
+        verify(oldInput).connect(connection);
+    }
+
+    @Test
+    void disconnectInput() {
+        Input input = mock(Input.class);
+        connection.connectInput(input);
+        connection.disconnectInput(input);
+
+        assertFalse(connection.getInputs().contains(input));
+        verify(input).disconnect();
+    }
+
+    @Test
+    void evaluateForNoOutput() {
+        SimulationState state = mock(SimulationState.class);
+        assertNull(connection.getOutput());
+        assertEquals(LogicState.UNDEFINED, connection.evaluate(state));
+    }
+
+    @Test
+    void evaluate() {
+        Output output = mock(Output.class);
+        SimulationState state = mock(SimulationState.class);
+        connection.connectOutput(output);
+        when(connection.evaluate(state)).thenReturn(LogicState.HIGH);
+
+        assertEquals(LogicState.HIGH, connection.evaluate(state));
     }
 }

@@ -2,6 +2,7 @@ package com.github.miro662.blazejsim.simulation;
 
 import com.github.miro662.blazejsim.circuits.Connection;
 import com.github.miro662.blazejsim.circuits.Input;
+import com.github.miro662.blazejsim.circuits.Pin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -23,11 +24,11 @@ public final class SimulationState {
 
     /**
      * Get simulation state for given input
-     * @param input to get status for
+     * @param pin to get status for
      * @return Input state for input's connection if it is specified in state, UNDEFINED if input has no connection
      */
-    public LogicState getFor(@NotNull Input input) {
-        Connection connection = input.getConnection();
+    public LogicState getFor(@NotNull Pin pin) {
+        Connection connection = pin.getConnection();
         if (connection == null) {
             return LogicState.UNDEFINED;
         } else {
@@ -37,5 +38,10 @@ public final class SimulationState {
 
     SimulationState(HashMap<Connection, LogicState> logicStates) {
         this.logicStates = new HashMap<>(logicStates);
+    }
+    private SimulationState() {this.logicStates = new HashMap<>();}
+
+    public static SimulationState empty() {
+        return new SimulationState();
     }
 }

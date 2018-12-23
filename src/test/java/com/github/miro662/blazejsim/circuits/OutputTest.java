@@ -23,17 +23,17 @@ public class OutputTest {
     }
 
     @Test
-    void testConnect() {
+    void connect() {
         output.connect(connection);
-        assertEquals(output.getConnection(), connection);
+        assertEquals(connection, output.getConnection());
     }
 
     @Test
-    void testConnectWhenConnected() {
+    void connectWhenConnected() {
         Connection old = mock(Connection.class);
         output.connect(old);
         output.connect(connection);
-        verify(old).disconnectOutput(output);
-        assertEquals(output.getConnection(), connection);
+        verify(old).disconnectOutput();
+        assertEquals(connection, output.getConnection());
     }
 }
