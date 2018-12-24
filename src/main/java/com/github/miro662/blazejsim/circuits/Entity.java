@@ -2,9 +2,10 @@ package com.github.miro662.blazejsim.circuits;
 
 import com.github.miro662.blazejsim.simulation.LogicState;
 import com.github.miro662.blazejsim.simulation.SimulationState;
-import com.github.miro662.blazejsim.simulation.SimulationStateBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.stream.Stream;
 
 /**
  * Describes single entity on circuit (e.g. logic gate, flip-flop)
@@ -22,13 +23,13 @@ public abstract class Entity {
      * Get all input pins of this entity
      * @return input pins of this entity
      */
-    @NotNull public abstract Iterable<Input> getInputs();
+    @NotNull public abstract Stream<Input> getInputs();
 
     /**
      * Get all names of input pins of this entity
      * @return names of input pins of this entity
      */
-    @NotNull public abstract Iterable<String> getInputNames();
+    @NotNull public abstract Stream<String> getInputNames();
 
     /**
      * Get output pin with given name.
@@ -42,13 +43,13 @@ public abstract class Entity {
      * Get all output pins of this entity
      * @return output pins of this entity
      */
-    @NotNull public abstract Iterable<Output> getOutputs();
+    @NotNull public abstract Stream<Output> getOutputs();
 
     /**
      * Get all names of output pins of this entity
      * @return names of output pins of this entity
      */
-    @NotNull public abstract Iterable<String> getOuptutNames();
+    @NotNull public abstract Stream<String> getOuptutNames();
 
     /**
      * Performs simulation step for given entity

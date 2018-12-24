@@ -41,6 +41,10 @@ public final class SimulationState {
     }
     private SimulationState() {this.logicStates = new HashMap<>();}
 
+    /**
+     * Get empty simulation state - all connections are UNDEFINED
+     * @return empty simulation state
+     */
     public static SimulationState empty() {
         return new SimulationState();
     }

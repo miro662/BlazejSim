@@ -11,9 +11,14 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.stream.Stream;
 
 /**
- * Base class of "class entities" - simple way to create your own entities
+ * Base class of "class entities" - simple way to create your own entities.
+ *
+ * ClassEntity automatically uses fields:
+ * - of type Input, annotated with @EntityInput as entity inputs
+ * - of type Output, annotated with @EntityOutput as entity outputs
  */
 public abstract class ClassEntity extends Entity {
     private HashMap<String, Input> inputs;
@@ -27,14 +32,14 @@ public abstract class ClassEntity extends Entity {
 
     @NotNull
     @Override
-    public Iterable<Input> getInputs() {
-        return inputs.values();
+    public Stream<Input> getInputs() {
+        return inputs.values().stream();
     }
 
     @NotNull
     @Override
-    public Iterable<String> getInputNames() {
-        return inputs.keySet();
+    public Stream<String> getInputNames() {
+        return inputs.keySet().stream();
     }
 
     @Nullable
@@ -45,14 +50,14 @@ public abstract class ClassEntity extends Entity {
 
     @NotNull
     @Override
-    public Iterable<Output> getOutputs() {
-        return outputs.values();
+    public Stream<Output> getOutputs() {
+        return outputs.values().stream();
     }
 
     @NotNull
     @Override
-    public Iterable<String> getOuptutNames() {
-        return outputs.keySet();
+    public Stream<String> getOuptutNames() {
+        return outputs.keySet().stream();
     }
 
     public ClassEntity() {
