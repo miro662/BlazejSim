@@ -1,5 +1,6 @@
 package com.github.miro662.blazejsim.circuits;
 
+import com.github.miro662.blazejsim.circuits.entities.Entity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

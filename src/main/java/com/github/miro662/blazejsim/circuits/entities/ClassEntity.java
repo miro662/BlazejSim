@@ -1,15 +1,12 @@
 package com.github.miro662.blazejsim.circuits.entities;
 
 
-import com.github.miro662.blazejsim.circuits.Entity;
 import com.github.miro662.blazejsim.circuits.Input;
 import com.github.miro662.blazejsim.circuits.Output;
-import com.github.miro662.blazejsim.simulation.LogicState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.stream.Stream;
 

@@ -1,7 +1,6 @@
 package com.github.miro662.blazejsim.simulation;
 
 import com.github.miro662.blazejsim.circuits.Connection;
-import com.github.miro662.blazejsim.circuits.Input;
 import com.github.miro662.blazejsim.circuits.Pin;
 import org.jetbrains.annotations.NotNull;
 

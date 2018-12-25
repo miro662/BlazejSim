@@ -1,5 +1,8 @@
-package com.github.miro662.blazejsim.circuits;
+package com.github.miro662.blazejsim.circuits.entities;
 
+import com.github.miro662.blazejsim.circuits.Connection;
+import com.github.miro662.blazejsim.circuits.Input;
+import com.github.miro662.blazejsim.circuits.Output;
 import com.github.miro662.blazejsim.simulation.LogicState;
 import com.github.miro662.blazejsim.simulation.SimulationState;
 import org.jetbrains.annotations.NotNull;
@@ -66,4 +69,22 @@ public abstract class Entity {
     }
 
     @NotNull protected abstract SimulationState simulate(SimulationState oldState) throws LogicState.UndefinedLogicStateException;
+
+    /**
+     * Disconnect all connections from entity
+     */
+    public void disconnectAll() {
+        getInputs().forEach((input) -> {
+            Connection connection = input.getConnection();
+            if (connection != null) {
+                connection.disconnectInput(input);
+            }
+        });
+        getOutputs().forEach((output) -> {
+            Connection connection = output.getConnection();
+            if (connection != null) {
+                connection.disconnectOutput();
+            }
+        });
+    }
 }

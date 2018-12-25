@@ -1,6 +1,6 @@
 package com.github.miro662.blazejsim.circuits.entities;
 
-import com.github.miro662.blazejsim.circuits.Entity;
+import com.github.miro662.blazejsim.circuits.Connection;
 import com.github.miro662.blazejsim.circuits.Input;
 import com.github.miro662.blazejsim.circuits.Output;
 import com.github.miro662.blazejsim.simulation.SimulationState;
@@ -8,9 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ClassEntityTest {

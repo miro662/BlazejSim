@@ -1,7 +1,7 @@
 package com.github.miro662.blazejsim.circuits;
 
+import com.github.miro662.blazejsim.circuits.entities.Entity;
 import com.github.miro662.blazejsim.simulation.Evaluable;
-import com.github.miro662.blazejsim.simulation.LogicState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
