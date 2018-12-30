@@ -56,4 +56,24 @@ public class SimulationStateBuilderTest {
         assertEquals(LogicState.LOW, ss.getFor(connectedPin));
         assertEquals(LogicState.LOW, ss.getFor(connection));
     }
+
+    @Test
+    void join() {
+        Connection otherConnection = mock(Connection.class);
+        Connection builderConnection = mock(Connection.class);
+
+        SimulationStateBuilder other = new SimulationStateBuilder();
+        ssb.addFor(connection, LogicState.LOW);
+        ssb.addFor(otherConnection, LogicState.LOW);
+
+        ssb.addFor(connection, LogicState.HIGH);
+        ssb.addFor(builderConnection, LogicState.HIGH);
+
+        ssb.join(other.build());
+        SimulationState ss = ssb.build();
+
+        assertEquals(LogicState.HIGH, ss.getFor(connection));
+        assertEquals(LogicState.LOW, ss.getFor(otherConnection));
+        assertEquals(LogicState.HIGH, ss.getFor(builderConnection));
+    }
 }

@@ -17,7 +17,7 @@ public class Connection implements Serializable, Evaluable {
     private List<Input> inputs;
     private Output output;
 
-    Connection() {
+    public Connection() {
         inputs = new ArrayList<>();
         output = null;
     }

@@ -33,6 +33,18 @@ public class SimulationStateBuilder {
         }
     }
 
+    /**
+     * Adds all parameters from state to build state
+     * If there are two different values for 1 connection, the ones from Builder are more important
+     * @param state SimulationState to be joined
+     */
+    public void join(@NotNull SimulationState state) {
+        logicStates.putAll(state.getLogicStates());
+    }
+
+    /**
+     * Creates new SimulationStateBuilder without any states
+     */
     public SimulationStateBuilder() {
         logicStates = new HashMap<>();
     }

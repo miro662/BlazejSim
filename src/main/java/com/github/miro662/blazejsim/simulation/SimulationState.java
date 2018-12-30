@@ -13,6 +13,14 @@ public final class SimulationState {
     private final HashMap<Connection, LogicState> logicStates;
 
     /**
+     * Returns all simulation logic states as HashMap
+     * @return all logic states
+     */
+    public HashMap<Connection, LogicState> getLogicStates() {
+        return logicStates;
+    }
+
+    /**
      * Get simulation state for given connection
      * @param connection to get status for
      * @return Logic state for connection if it is specified in state, UNDEFINED if not
