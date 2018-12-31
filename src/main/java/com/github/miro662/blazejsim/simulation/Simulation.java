@@ -5,6 +5,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -16,10 +18,13 @@ public class Simulation {
     private Circuit circuit;
     private SimulationState currentState;
     private ExecutorService simulationExecutor;
+    private Thread simulationThread;
+    private Timer timer;
 
     private void initializeExecutor() {
         //TODO: adjust this
         this.simulationExecutor = Executors.newFixedThreadPool(2);
+        timer = new Timer();
     }
 
     /**
@@ -84,5 +89,28 @@ public class Simulation {
             this.toSimulate = toSimulate;
             this.oldState = oldState;
         }
+    }
+
+    /**
+     * Starts simulation
+     */
+    public synchronized void start() {
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    next();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 0, 10);
+    }
+
+    /**
+     * Stops simulation
+     */
+    public synchronized void stop() {
+        timer.cancel();
     }
 }

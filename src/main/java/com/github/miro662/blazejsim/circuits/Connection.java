@@ -95,4 +95,19 @@ public class Connection implements Serializable, Evaluable {
             return LogicState.UNDEFINED;
         }
     }
+
+    /**
+     * Creates connection between given output and inputs
+     * @param output output to be connected with inputs
+     * @param inputs inputs to be connected with output
+     * @return connection between output and inputs
+     */
+    public static Connection between(Output output, Input[] inputs) {
+        Connection connection = new Connection();
+        connection.connectOutput(output);
+        for (Input input : inputs) {
+            connection.connectInput(input);
+        }
+        return connection;
+    }
 }

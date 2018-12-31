@@ -2,21 +2,18 @@ package com.github.miro662.blazejsim;
 
 import com.github.miro662.blazejsim.circuits.Circuit;
 import com.github.miro662.blazejsim.circuits.Connection;
+import com.github.miro662.blazejsim.circuits.Input;
+import com.github.miro662.blazejsim.circuits.entities.SimpleOutput;
 import com.github.miro662.blazejsim.circuits.entities.constants.One;
 import com.github.miro662.blazejsim.circuits.entities.constants.Zero;
-import com.github.miro662.blazejsim.circuits.entities.logic_gates.AndGate;
+import com.github.miro662.blazejsim.circuits.entities.logic_gates.OrGate;
 import com.github.miro662.blazejsim.simulation.Simulation;
-import com.github.miro662.blazejsim.simulation.SimulationState;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ExecutionException;
 
 public class BlazejSim {
-    public void aaa() {
 
-    }
-
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
+    public static void main(String[] args) throws InterruptedException {
         Circuit circuit = new Circuit();
 
         One one = new One();
@@ -25,24 +22,20 @@ public class BlazejSim {
         Zero zero = new Zero();
         circuit.addEntity(zero);
 
-        Connection zeroConnection = new Connection();
-        zeroConnection.connectOutput(zero.y);
-
-        Connection oneConnection = new Connection();
-        oneConnection.connectOutput(one.y);
-
-        AndGate gate = new AndGate();
-        zeroConnection.connectInput(gate.a);
-        zeroConnection.connectInput(gate.b);
+        OrGate gate = new OrGate();
         circuit.addEntity(gate);
 
-        Connection andConnection = new Connection();
-        andConnection.connectOutput(gate.y);
+        SimpleOutput output = new SimpleOutput();
+        circuit.addEntity(output);
+
+        Connection zeroConnection = Connection.between(one.y, new Input[] {gate.a});
+        Connection oneConnection = Connection.between(zero.y, new Input[] {gate.b});
+        Connection outputConnection = Connection.between(gate.y, new Input[] {output.in});
 
         Simulation simulation = new Simulation(circuit);
-        SimulationState sim = simulation.next();
-        System.out.println(sim.getFor(gate.y));
-        sim = simulation.next();
-        System.out.println(sim.getFor(gate.y));
+        simulation.start();
+
+        Thread.sleep(100);
+        System.out.println(output.getOutputState());
     }
 }
