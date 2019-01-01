@@ -23,37 +23,37 @@ public abstract class ClassEntity extends Entity {
 
     @Nullable
     @Override
-    public Input getInput(String name) {
+    public final Input getInput(String name) {
         return inputs.get(name);
     }
 
     @NotNull
     @Override
-    public Stream<Input> getInputs() {
+    public final Stream<Input> getInputs() {
         return inputs.values().stream();
     }
 
     @NotNull
     @Override
-    public Stream<String> getInputNames() {
+    public final Stream<String> getInputNames() {
         return inputs.keySet().stream();
     }
 
     @Nullable
     @Override
-    public Output getOutput(String name) {
+    public final Output getOutput(String name) {
         return outputs.get(name);
     }
 
     @NotNull
     @Override
-    public Stream<Output> getOutputs() {
+    public final Stream<Output> getOutputs() {
         return outputs.values().stream();
     }
 
     @NotNull
     @Override
-    public Stream<String> getOuptutNames() {
+    public final Stream<String> getOuptutNames() {
         return outputs.keySet().stream();
     }
 

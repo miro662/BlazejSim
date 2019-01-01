@@ -13,9 +13,11 @@ import java.util.stream.Stream;
  */
 public class Circuit implements Serializable {
     private List<Entity> entities;
+    private List<Connection> connections;
 
     public Circuit() {
         entities = new LinkedList<>();
+        connections = new LinkedList<>();
     }
 
     /**
@@ -45,5 +47,9 @@ public class Circuit implements Serializable {
      */
     public Stream<Entity> getEntities() {
         return entities.stream();
+    }
+
+    public void connect(Output output, Input input) {
+        output.disconnect();
     }
 }
