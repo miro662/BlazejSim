@@ -9,11 +9,9 @@ import com.github.miro662.blazejsim.circuits.entities.constants.Zero;
 import com.github.miro662.blazejsim.circuits.entities.logic_gates.OrGate;
 import com.github.miro662.blazejsim.simulation.Simulation;
 
-import java.util.concurrent.ExecutionException;
-
 public class BlazejSim {
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, Circuit.NotFromCircuitException, Circuit.AlreadyConnectedInputException {
         Circuit circuit = new Circuit();
 
         One one = new One();
@@ -28,9 +26,9 @@ public class BlazejSim {
         SimpleOutput output = new SimpleOutput();
         circuit.addEntity(output);
 
-        Connection zeroConnection = Connection.between(one.y, new Input[] {gate.a});
-        Connection oneConnection = Connection.between(zero.y, new Input[] {gate.b});
-        Connection outputConnection = Connection.between(gate.y, new Input[] {output.in});
+        circuit.connect(one.y, gate.a);
+        circuit.connect(zero.y, gate.b);
+        circuit.connect(gate.y, output.in);
 
         Simulation simulation = new Simulation(circuit);
         simulation.start();

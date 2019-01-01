@@ -7,18 +7,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Describes connection between 2 pins
  */
 public class Connection implements Serializable, Evaluable {
-    private List<Input> inputs;
+    private Set<Input> inputs;
     private Output output;
 
     public Connection() {
-        inputs = new ArrayList<>();
+        inputs = new HashSet<>();
         output = null;
     }
 
@@ -60,7 +60,7 @@ public class Connection implements Serializable, Evaluable {
      * @return iterator with connection's outputs
      */
     @NotNull
-    public List<Input> getInputs() {
+    public Set<Input> getInputs() {
         return inputs;
     }
 
@@ -84,6 +84,13 @@ public class Connection implements Serializable, Evaluable {
         if (inputs.contains(input)) {
             input.disconnect();
             inputs.remove(input);
+        }
+    }
+
+    public void disconenctInputs() {
+        for (Input input:
+             inputs) {
+            disconnectInput(input);
         }
     }
 

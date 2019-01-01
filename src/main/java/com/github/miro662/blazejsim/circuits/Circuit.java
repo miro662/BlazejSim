@@ -3,9 +3,11 @@ package com.github.miro662.blazejsim.circuits;
 import com.github.miro662.blazejsim.circuits.entities.Entity;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.text.html.Option;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -49,7 +51,68 @@ public class Circuit implements Serializable {
         return entities.stream();
     }
 
-    public void connect(Output output, Input input) {
-        output.disconnect();
+    private void checkInCircuit(Pin pin) throws NotFromCircuitException {
+        if (!entities.contains(pin.getEntity())) {
+            throw new NotFromCircuitException(pin.getEntity());
+        }
+    }
+
+    /**
+     * Connects 2 given entities using connection
+     *
+     * If there is already something connected to output, connect input to it
+     * If output is already connected to this input, keep this connection
+     * If there is something connected to input, throw exception
+     * If trying to connect pin from entity not from circuit, throw exception
+     * @param output output to be connected to input
+     * @param input input to be connected to output
+     * @return new connection
+     * @throws NotFromCircuitException trying to connect inputs/outputs which are not from this circuit
+     * @throws  AlreadyConnectedInputException something is already connected to given input
+     */
+    @NotNull
+    public Connection connect(Output output, Input input) throws NotFromCircuitException, AlreadyConnectedInputException {
+        checkInCircuit(output);
+        checkInCircuit(input);
+
+        if (input.getConnection() != null) {
+            throw new AlreadyConnectedInputException();
+        }
+
+        Optional<Connection> connectionOption = connections.stream().filter((connection -> connection.getOutput() == output)).findFirst();
+        Connection connection = connectionOption.orElseGet(() -> {
+            Connection newConnection = new Connection();
+            newConnection.connectOutput(output);
+            connections.add(newConnection);
+            return newConnection;
+        });
+
+        connection.connectInput(input);
+
+        return connection;
+    }
+
+    /**
+     * Get all connections in circuit
+     * @return stream containing all connections
+     */
+    public Stream<Connection> getConnections() {
+        return connections.stream();
+    }
+
+    public final class NotFromCircuitException extends Exception {
+        public NotFromCircuitException(Entity entity) {
+            this.entity = entity;
+        }
+
+        private final Entity entity;
+
+        public Entity getEntity() {
+            return entity;
+        }
+    }
+
+    public class AlreadyConnectedInputException extends Exception {
+
     }
 }
