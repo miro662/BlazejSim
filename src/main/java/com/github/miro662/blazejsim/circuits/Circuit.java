@@ -3,7 +3,6 @@ package com.github.miro662.blazejsim.circuits;
 import com.github.miro662.blazejsim.circuits.entities.Entity;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.text.html.Option;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,9 +37,7 @@ public class Circuit implements Serializable {
      */
     public void deleteEntity(@NotNull Entity entity) {
         entity.disconnectAll();
-        if (entities.contains(entity)) {
-            entities.remove(entity);
-        }
+        entities.remove(entity);
     }
 
     /**
@@ -90,6 +87,37 @@ public class Circuit implements Serializable {
         connection.connectInput(input);
 
         return connection;
+    }
+
+    /**
+     * Disconnects given output from all inputs and deletes related connection
+     * @param output to be disconnected
+     */
+    public void disconnect(Output output) throws NotFromCircuitException {
+        checkInCircuit(output);
+
+        if (output.getConnection() == null) return;
+
+        Connection connection = output.getConnection();
+        connection.disconnectOutput();
+        connection.disconnectInputs();
+        connections.remove(connection);
+    }
+
+    /**
+     * Disconnects given input, if no inputs connected to given connection deletes it too
+     */
+    public void disconnect(Input input) throws NotFromCircuitException {
+        checkInCircuit(input);
+
+        if (input.getConnection() == null) return;
+
+        Connection connection = input.getConnection();
+        connection.disconnectInput(input);
+        if (connection.getInputs().isEmpty()) {
+            connection.disconnectOutput();
+            connections.remove(connection);
+        }
     }
 
     /**

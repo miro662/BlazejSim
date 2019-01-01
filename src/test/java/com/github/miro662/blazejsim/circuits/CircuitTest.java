@@ -92,8 +92,8 @@ public class CircuitTest {
 
         Entity entity3 = mock(Entity.class);
         Input input3 = mock(Input.class);
-        when(input3.getEntity()).thenReturn(entity2);
-        circuit.addEntity(entity2);
+        when(input3.getEntity()).thenReturn(entity3);
+        circuit.addEntity(entity3);
 
         Connection connection2 = circuit.connect(output, input3);
         assertEquals(connection2.getOutput(), output);
@@ -101,5 +101,101 @@ public class CircuitTest {
         assertTrue(connection2.getInputs().contains(input));
         assertEquals(1, circuit.getConnections().count());
         assertEquals(connection, connection2);
+    }
+
+    @Test
+    void disconnectOutputThrowsWhenNotInOutput() {
+        Entity entity1 = mock(Entity.class);
+        Output output = mock(Output.class);
+        when(output.getEntity()).thenReturn(entity1);
+
+        assertThrows(Circuit.NotFromCircuitException.class, () -> circuit.disconnect(output));
+    }
+
+    @Test
+    void disconnectOutput() throws Circuit.NotFromCircuitException, Circuit.AlreadyConnectedInputException {
+        Entity entity1 = mock(Entity.class);
+        Output output = mock(Output.class);
+        when(output.getEntity()).thenReturn(entity1);
+        circuit.addEntity(entity1);
+
+        Entity entity2 = mock(Entity.class);
+        Input input = mock(Input.class);
+        when(input.getEntity()).thenReturn(entity2);
+        circuit.addEntity(entity2);
+
+        Connection connection = circuit.connect(output, input);
+        when(output.getConnection()).thenReturn(connection);
+        when(input.getConnection()).thenReturn(connection);
+        circuit.disconnect(output);
+
+        verify(output).disconnect();
+        verify(input).disconnect();
+        assertEquals(0, circuit.getConnections().count());
+    }
+
+    @Test
+    void disconnectInputThrowsWhenNotInOutput() {
+        Entity entity1 = mock(Entity.class);
+        Input input = mock(Input.class);
+        when(input.getEntity()).thenReturn(entity1);
+
+        assertThrows(Circuit.NotFromCircuitException.class, () -> circuit.disconnect(input));
+    }
+
+    @Test
+    void disconnectInput() throws Circuit.NotFromCircuitException, Circuit.AlreadyConnectedInputException {
+        Entity entity1 = mock(Entity.class);
+        Output output = mock(Output.class);
+        when(output.getEntity()).thenReturn(entity1);
+        circuit.addEntity(entity1);
+
+        Entity entity2 = mock(Entity.class);
+        Input input = mock(Input.class);
+        when(input.getEntity()).thenReturn(entity2);
+        circuit.addEntity(entity2);
+
+        Entity entity3 = mock(Entity.class);
+        Input input2 = mock(Input.class);
+        when(input2.getEntity()).thenReturn(entity3);
+        circuit.addEntity(entity3);
+
+        Connection c = circuit.connect(output, input);
+        circuit.connect(output, input2);
+        when(output.getConnection()).thenReturn(c);
+        when(input.getConnection()).thenReturn(c);
+        when(input2.getConnection()).thenReturn(c);
+
+        circuit.disconnect(input2);
+
+        assertTrue(c.getInputs().contains(input));
+        assertFalse(c.getInputs().contains(input2));
+        assertEquals(output, c.getOutput());
+        assertEquals(1, circuit.getConnections().count());
+        verify(input2).disconnect();
+    }
+
+
+    @Test
+    void disconnectOnlyInput() throws Circuit.NotFromCircuitException, Circuit.AlreadyConnectedInputException {
+        Entity entity1 = mock(Entity.class);
+        Output output = mock(Output.class);
+        when(output.getEntity()).thenReturn(entity1);
+        circuit.addEntity(entity1);
+
+        Entity entity2 = mock(Entity.class);
+        Input input = mock(Input.class);
+        when(input.getEntity()).thenReturn(entity2);
+        circuit.addEntity(entity2);
+
+        Connection c = circuit.connect(output, input);
+        when(output.getConnection()).thenReturn(c);
+        when(input.getConnection()).thenReturn(c);
+
+        circuit.disconnect(input);
+
+        assertEquals(0, circuit.getConnections().count());
+        verify(output).disconnect();
+        verify(input).disconnect();
     }
 }

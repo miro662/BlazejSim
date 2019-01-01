@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -87,11 +88,11 @@ public class Connection implements Serializable, Evaluable {
         }
     }
 
-    public void disconenctInputs() {
-        for (Input input:
-             inputs) {
+    public void disconnectInputs() {
+        for (Input input : inputs) {
             disconnectInput(input);
         }
+        inputs.clear();
     }
 
     @Override
