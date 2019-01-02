@@ -48,7 +48,7 @@ public class Circuit implements Serializable {
         return entities.stream();
     }
 
-    private void checkInCircuit(Pin pin) throws NotFromCircuitException {
+    private void checkInCircuit(@NotNull Pin pin) throws NotFromCircuitException {
         if (!entities.contains(pin.getEntity())) {
             throw new NotFromCircuitException(pin.getEntity());
         }

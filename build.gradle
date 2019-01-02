@@ -21,6 +21,7 @@ dependencies {
     )
     testCompile "org.mockito:mockito-core:2.+"
     compile group: 'org.jetbrains', name: 'annotations', version: '13.0'
+    implementation "org.reflections:reflections:0.9.11"
 }
 
 mainClassName = 'com.github.miro662.blazejsim.BlazejSim'

@@ -5,12 +5,14 @@ import com.github.miro662.blazejsim.circuits.Output;
 import com.github.miro662.blazejsim.circuits.entities.ClassEntity;
 import com.github.miro662.blazejsim.circuits.entities.EntityInput;
 import com.github.miro662.blazejsim.circuits.entities.EntityOutput;
+import com.github.miro662.blazejsim.circuits.entities.base.RegisterEntity;
 import com.github.miro662.blazejsim.circuits.entities.helpers.EdgeDetector;
 import com.github.miro662.blazejsim.simulation.LogicState;
 import com.github.miro662.blazejsim.simulation.SimulationState;
 import com.github.miro662.blazejsim.simulation.SimulationStateBuilder;
 import org.jetbrains.annotations.NotNull;
 
+@RegisterEntity(name = "FlipFlops/D")
 public class DFlipFlop extends ClassEntity {
     @EntityInput
     public Input d;

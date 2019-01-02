@@ -22,6 +22,16 @@ public class RegisteredEntity {
     private Class<? extends Entity> entityClass;
 
     /**
+     * Return name of registered entity
+     * @return registered entity's name
+     */
+    public String getName() {
+        return name;
+    }
+
+    private String name;
+
+    /**
      * Create new RegisteredEntity using annotated Entity
      * @param entityClass entity class to be used to create RegisteredEntity instance
      * @return RegisteredEntity instance for given Entity class
@@ -35,8 +45,7 @@ public class RegisteredEntity {
         }
         RegisteredEntity registeredEntity = new RegisteredEntity();
         registeredEntity.entityClass = entityClass;
-
-        //TODO: set other params from annotation to RegisteredEntity
+        registeredEntity.name = annotation.name();
 
         return registeredEntity;
     }
@@ -45,7 +54,6 @@ public class RegisteredEntity {
      * Creates entity of registered entity
      * @return created entity
      */
-    @NotNull
     public Entity create() {
         try {
             return getEntityClass().getConstructor().newInstance();
