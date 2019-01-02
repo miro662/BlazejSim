@@ -9,12 +9,13 @@ import com.github.miro662.blazejsim.simulation.Stepable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Serializable;
 import java.util.stream.Stream;
 
 /**
  * Describes single entity on circuit (e.g. logic gate, flip-flop)
  */
-public abstract class Entity implements Stepable {
+public abstract class Entity implements Stepable, Serializable {
     /**
      * Get input pin with given name.
      * If input pin with given name does not exist, returns null
