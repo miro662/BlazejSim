@@ -19,6 +19,8 @@ public class MainWindow extends JFrame {
     private JButton stopButton;
     private JButton pauseButton;
 
+    private EntityChooser entityChooser;
+
     public MainWindow(Circuit circuit, EntityBase entityBase) {
         super("BlazejSim");
         this.circuit = circuit;
@@ -30,10 +32,15 @@ public class MainWindow extends JFrame {
         setSize(800, 600);
 
         JPanel topMenu = new JPanel(new BorderLayout());
+        topMenu.setBackground(new Color(220, 220, 220));
         add(topMenu, BorderLayout.PAGE_START);
 
         topMenu.add(createSimulationMenu(), BorderLayout.LINE_END);
         topMenu.add(createFileMenu(), BorderLayout.LINE_START);
+
+        entityChooser = new EntityChooser(entityBase);
+        entityChooser.addEntityChooseListener((re) -> JOptionPane.showMessageDialog(this, re.getName()));
+        add(entityChooser, BorderLayout.LINE_START);
     }
 
     private JPanel createFileMenu() {
@@ -51,6 +58,7 @@ public class MainWindow extends JFrame {
         saveFileButton.addActionListener((e) -> saveFile());
         fileMenu.add(saveFileButton);
 
+        fileMenu.setBackground(new Color(220, 220, 220));
         return fileMenu;
     }
 
@@ -70,6 +78,8 @@ public class MainWindow extends JFrame {
         stopButton.setEnabled(false);
         stopButton.addActionListener((e) -> stopSimulation());
         simulationMenu.add(stopButton);
+
+        simulationMenu.setBackground(new Color(220, 220, 220));
         return simulationMenu;
     }
 

@@ -1,0 +1,9 @@
+Add new entity:
+1) select entity that I want to add
+2) view changes to "addition mode"
+LMB) add entity at given place
+RMB) cancel
+
+Add connection
+1) LMB and hold on pin (output in MVP)
+2) Move (when clicked) to another pin (input in MVP)
