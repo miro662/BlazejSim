@@ -29,4 +29,9 @@ public class AndGate extends ClassEntity {
         ssb.addFor(y, LogicState.fromBoolean(oldState.getFor(a).getValue() && oldState.getFor(b).getValue()));
         return ssb.build();
     }
+
+    @Override
+    public String getEntityPath() {
+        return "/entities/and.png";
+    }
 }

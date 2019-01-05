@@ -26,4 +26,9 @@ public class NotGate extends ClassEntity {
         ssb.addFor(y, LogicState.fromBoolean(!state.getFor(a).getValue()));
         return ssb.build();
     }
+
+    @Override
+    public String getEntityPath() {
+        return "/entities/not.png";
+    }
 }

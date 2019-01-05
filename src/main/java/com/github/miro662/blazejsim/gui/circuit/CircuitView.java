@@ -1,6 +1,9 @@
 package com.github.miro662.blazejsim.gui.circuit;
 
 import com.github.miro662.blazejsim.circuits.Circuit;
+import com.github.miro662.blazejsim.circuits.entities.Entity;
+import com.github.miro662.blazejsim.circuits.entities.base.RegisteredEntity;
+import com.github.miro662.blazejsim.gui.EntityChooser;
 import com.github.miro662.blazejsim.gui.Parameters;
 import com.github.miro662.blazejsim.gui.circuit.entity_views.EntityView;
 import com.github.miro662.blazejsim.gui.circuit.entity_views.EntityViewFactory;
@@ -13,7 +16,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class CircuitView extends JPanel implements MouseListener {
+public class CircuitView extends JPanel implements MouseListener, EntityChooser.EntityChooseListener {
     private Circuit circuit;
 
     public CircuitView(Circuit circuit) {
@@ -21,6 +24,7 @@ public class CircuitView extends JPanel implements MouseListener {
         this.circuit = circuit;
         addMouseListener(this);
         initializeEntityViews();
+        toCreate = null;
     }
 
     @Override
@@ -70,7 +74,7 @@ public class CircuitView extends JPanel implements MouseListener {
     private Point toPosition(Point gridPosition) {
         return new Point(
                 gridPosition.getX() * Parameters.cellSize + Parameters.getHalfCellSize(),
-                gridPosition.getX() * Parameters.cellSize + Parameters.getHalfCellSize()
+                gridPosition.getY() * Parameters.cellSize + Parameters.getHalfCellSize()
         );
     }
 
@@ -88,13 +92,32 @@ public class CircuitView extends JPanel implements MouseListener {
         }
     }
 
+    public void reset() {
+        initializeEntityViews();
+        repaint();
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        JOptionPane.showMessageDialog(this, fromPosition(e.getX(), e.getY()));
+        if (toCreate != null) {
+            if (e.getButton() != 1) {
+                toCreate = null;
+            } else {
+                Entity newEntity = toCreate.create();
+                newEntity.setPosition(fromPosition(e.getX(), e.getY()).getGridPoint());
+                circuit.addEntity(newEntity);
+
+                EntityView ev = EntityViewFactory.forEntity(newEntity);
+                entityViews.add(ev);
+
+                toCreate = null;
+                repaint();
+            }
+        }
     }
 
     @Override
@@ -110,5 +133,11 @@ public class CircuitView extends JPanel implements MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {
 
+    }
+
+    private RegisteredEntity toCreate;
+    @Override
+    public void choose(RegisteredEntity entity) {
+        toCreate = entity;
     }
 }

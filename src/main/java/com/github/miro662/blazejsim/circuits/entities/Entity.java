@@ -104,4 +104,8 @@ public abstract class Entity implements Stepable, Serializable {
     public Entity() {
         this.position = new Point(0, 0);
     }
+
+    public String getEntityPath() {
+        return "/entities/unknown.png";
+    }
 }

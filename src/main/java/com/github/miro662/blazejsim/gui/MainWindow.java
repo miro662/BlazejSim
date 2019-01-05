@@ -43,15 +43,11 @@ public class MainWindow extends JFrame {
         topMenu.add(createFileMenu(), BorderLayout.LINE_START);
 
         entityChooser = new EntityChooser(entityBase);
-        entityChooser.addEntityChooseListener((re) -> JOptionPane.showMessageDialog(this, re.getName()));
         add(entityChooser, BorderLayout.LINE_START);
-
-        Zero tmpzero = new Zero();
-        tmpzero.setPosition(new Point(2, 3));
-        circuit.addEntity(tmpzero);
 
         circuitView = new CircuitView(circuit);
         add(circuitView, BorderLayout.CENTER);
+        entityChooser.addEntityChooseListener(circuitView);
     }
 
     private JPanel createFileMenu() {
@@ -167,5 +163,6 @@ public class MainWindow extends JFrame {
     private void initForCircuit(Circuit circuit) {
         stopSimulation();
         this.circuit = circuit;
+        circuitView.reset();
     }
 }

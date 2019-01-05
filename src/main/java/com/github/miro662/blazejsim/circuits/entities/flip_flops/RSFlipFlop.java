@@ -42,4 +42,9 @@ public class RSFlipFlop extends ClassEntity {
 
         return ssb.build();
     }
+
+    @Override
+    public String getEntityPath() {
+        return "/entities/RS.png";
+    }
 }

@@ -48,4 +48,9 @@ public class DFlipFlop extends ClassEntity {
         ssb.addFor(notQ, LogicState.fromBoolean(!status));
         return ssb.build();
     }
+
+    @Override
+    public String getEntityPath() {
+        return "/entities/D.png";
+    }
 }

@@ -24,4 +24,9 @@ public class Zero extends ClassEntity {
         ssb.addFor(y, LogicState.LOW);
         return ssb.build();
     }
+
+    @Override
+    public String getEntityPath() {
+        return "/entities/Zero.png";
+    }
 }
