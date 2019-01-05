@@ -3,6 +3,7 @@ package com.github.miro662.blazejsim.circuits.entities;
 import com.github.miro662.blazejsim.circuits.Connection;
 import com.github.miro662.blazejsim.circuits.Input;
 import com.github.miro662.blazejsim.circuits.Output;
+import com.github.miro662.blazejsim.gui.circuit.Point;
 import com.github.miro662.blazejsim.simulation.LogicState;
 import com.github.miro662.blazejsim.simulation.SimulationState;
 import com.github.miro662.blazejsim.simulation.Stepable;
@@ -88,5 +89,19 @@ public abstract class Entity implements Stepable, Serializable {
                 connection.disconnectOutput();
             }
         });
+    }
+
+    private Point position;
+
+    public Point getPosition() {
+        return position;
+    }
+
+    public void setPosition(Point position) {
+        this.position = position;
+    }
+
+    public Entity() {
+        this.position = new Point(0, 0);
     }
 }

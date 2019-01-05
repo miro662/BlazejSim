@@ -2,6 +2,7 @@ package com.github.miro662.blazejsim.gui;
 
 import com.github.miro662.blazejsim.circuits.Circuit;
 import com.github.miro662.blazejsim.circuits.entities.base.EntityBase;
+import com.github.miro662.blazejsim.gui.circuit.CircuitView;
 import com.github.miro662.blazejsim.simulation.Simulation;
 
 import javax.swing.*;
@@ -20,6 +21,7 @@ public class MainWindow extends JFrame {
     private JButton pauseButton;
 
     private EntityChooser entityChooser;
+    private CircuitView circuitView;
 
     public MainWindow(Circuit circuit, EntityBase entityBase) {
         super("BlazejSim");
@@ -32,7 +34,7 @@ public class MainWindow extends JFrame {
         setSize(800, 600);
 
         JPanel topMenu = new JPanel(new BorderLayout());
-        topMenu.setBackground(new Color(220, 220, 220));
+        topMenu.setBackground(Parameters.menuColor);
         add(topMenu, BorderLayout.PAGE_START);
 
         topMenu.add(createSimulationMenu(), BorderLayout.LINE_END);
@@ -41,6 +43,9 @@ public class MainWindow extends JFrame {
         entityChooser = new EntityChooser(entityBase);
         entityChooser.addEntityChooseListener((re) -> JOptionPane.showMessageDialog(this, re.getName()));
         add(entityChooser, BorderLayout.LINE_START);
+
+        circuitView = new CircuitView();
+        add(circuitView, BorderLayout.CENTER);
     }
 
     private JPanel createFileMenu() {
@@ -58,7 +63,7 @@ public class MainWindow extends JFrame {
         saveFileButton.addActionListener((e) -> saveFile());
         fileMenu.add(saveFileButton);
 
-        fileMenu.setBackground(new Color(220, 220, 220));
+        fileMenu.setBackground(Parameters.menuColor);
         return fileMenu;
     }
 
@@ -79,7 +84,7 @@ public class MainWindow extends JFrame {
         stopButton.addActionListener((e) -> stopSimulation());
         simulationMenu.add(stopButton);
 
-        simulationMenu.setBackground(new Color(220, 220, 220));
+        simulationMenu.setBackground(Parameters.menuColor);
         return simulationMenu;
     }
 

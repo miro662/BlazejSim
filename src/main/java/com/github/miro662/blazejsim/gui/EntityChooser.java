@@ -23,7 +23,7 @@ public class EntityChooser extends JPanel {
         ButtonGroup group = new ButtonGroup();
 
         entityBase.getAll().forEach((registeredEntity -> {
-            setBackground(new Color(230, 230, 230));
+            setBackground(Parameters.chooserColor);
             JButton button = new JButton(registeredEntity.getName());
             button.setPreferredSize(new Dimension(180, 30));
             button.addActionListener((action) ->
