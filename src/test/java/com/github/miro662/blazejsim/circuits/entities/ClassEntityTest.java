@@ -13,13 +13,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ClassEntityTest {
     class ClassEntityToTest extends ClassEntity {
-        @EntityInput
+        @EntityInput(offset = 7)
         public Input in;
 
-        @EntityInput
+        @EntityInput(offset = 24)
         public Input in2;
 
-        @EntityOutput
+        @EntityOutput(offset = 15)
         public Output out;
 
         @NotNull

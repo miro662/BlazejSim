@@ -9,8 +9,8 @@ import org.jetbrains.annotations.NotNull;
  * Describes single input of Entity
  */
 public class Input extends Pin {
-    public Input(@NotNull Entity entity) {
-        super(entity);
+    public Input(@NotNull Entity entity, int offset) {
+        super(entity, offset);
     }
 
     @Override

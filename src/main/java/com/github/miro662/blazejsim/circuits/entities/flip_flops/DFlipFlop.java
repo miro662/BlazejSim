@@ -14,16 +14,16 @@ import org.jetbrains.annotations.NotNull;
 
 @RegisterEntity(name = "FlipFlops/D")
 public class DFlipFlop extends ClassEntity {
-    @EntityInput
+    @EntityInput(offset = 7)
     public Input d;
 
-    @EntityInput
+    @EntityInput(offset = 24)
     public Input clk;
 
-    @EntityOutput
+    @EntityOutput(offset = 7)
     public Output q;
 
-    @EntityOutput
+    @EntityOutput(offset = 24)
     public Output notQ;
 
     private boolean status;

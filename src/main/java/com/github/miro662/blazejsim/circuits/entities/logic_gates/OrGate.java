@@ -13,13 +13,13 @@ import org.jetbrains.annotations.NotNull;
 
 @RegisterEntity(name = "Logic Gates/OR")
 public class OrGate extends ClassEntity {
-    @EntityInput
+    @EntityInput(offset = 7)
     public Input a;
 
-    @EntityInput
+    @EntityInput(offset = 24)
     public Input b;
 
-    @EntityOutput
+    @EntityOutput(offset = 16)
     public Output y;
 
     @NotNull

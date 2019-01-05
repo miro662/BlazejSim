@@ -7,8 +7,8 @@ import org.jetbrains.annotations.NotNull;
  * Describes single output of Entity
  */
 public class Output extends Pin {
-    public Output(@NotNull Entity entity) {
-        super(entity);
+    public Output(@NotNull Entity entity, int offset) {
+        super(entity, offset);
     }
 
     @Override

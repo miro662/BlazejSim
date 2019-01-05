@@ -17,7 +17,7 @@ public class InputTest {
     @BeforeEach
     void initializeInput() {
         entity = mock(Entity.class);
-        input = new Input(entity);
+        input = new Input(entity, 0);
     }
 
     @BeforeEach

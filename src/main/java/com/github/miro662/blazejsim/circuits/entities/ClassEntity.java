@@ -69,8 +69,9 @@ public abstract class ClassEntity extends Entity {
         // get all fields annotated as EntityInputs which are Inputs
         for (Field field : this.getClass().getFields()) {
             if (field.isAnnotationPresent(EntityInput.class) && field.getType() == Input.class) {
+                EntityInput ei = field.getAnnotation(EntityInput.class);
                 // create new Input related to this Entity
-                Input input = new Input(this);
+                Input input = new Input(this, ei.offset());
                 try {
                     // set this field to this input
                     field.set(this, input);
@@ -88,8 +89,9 @@ public abstract class ClassEntity extends Entity {
         // get all fields annotated as EntityInputs which are Outputs
         for (Field field : this.getClass().getFields()) {
             if (field.isAnnotationPresent(EntityOutput.class) && field.getType() == Output.class) {
+                EntityOutput eo = field.getAnnotation(EntityOutput.class);
                 // create new Output related to this Entity
-                Output output = new Output(this);
+                Output output = new Output(this, eo.offset());
                 try {
                     // set this field to this output
                     field.set(this, output);

@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
  */
 @RegisterEntity(name = "Constants/Zero")
 public class Zero extends ClassEntity {
-    @EntityOutput
+    @EntityOutput(offset = 15)
     public Output y;
 
     @NotNull

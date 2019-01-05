@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  * helper class for making outputs
  */
 public class SimpleOutput extends ClassEntity {
-    @EntityInput
+    @EntityInput(offset = 16)
     public Input in;
 
     public synchronized LogicState getOutputState() {

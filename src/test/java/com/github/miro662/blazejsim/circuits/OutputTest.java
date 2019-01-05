@@ -15,7 +15,7 @@ public class OutputTest {
     @BeforeEach
     void initializeInput() {
         entity = mock(Entity.class);
-        output = new Output(entity);
+        output = new Output(entity, 0);
     }
 
     @BeforeEach

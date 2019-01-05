@@ -13,10 +13,12 @@ import java.io.Serializable;
 public class Pin implements Serializable, Evaluable {
     private Entity entity;
     private Connection connection;
+    private int offset;
 
-    public Pin(@NotNull Entity entity) {
+    public Pin(@NotNull Entity entity, int offset) {
         this.entity = entity;
         this.connection = null;
+        this.offset = offset;
     }
 
     /**
@@ -43,5 +45,4 @@ public class Pin implements Serializable, Evaluable {
     public Connection getConnection() {
         return connection;
     }
-
 }
