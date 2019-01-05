@@ -130,9 +130,9 @@ public class MainWindow extends JFrame {
                 ois.close();
                 fis.close();
 
-                initForCircuit(circuit);
+                initForCircuit(c);
             } catch (Exception e) {
-                System.err.println("Error reading file");
+                e.printStackTrace();
             }
         }
     }
@@ -149,7 +149,7 @@ public class MainWindow extends JFrame {
                 oos.close();
                 fos.close();
             } catch (Exception e) {
-                System.err.println("Error saving file");
+                e.printStackTrace();
             }
         }
     }
@@ -163,6 +163,6 @@ public class MainWindow extends JFrame {
     private void initForCircuit(Circuit circuit) {
         stopSimulation();
         this.circuit = circuit;
-        circuitView.reset();
+        circuitView.reset(this.circuit);
     }
 }

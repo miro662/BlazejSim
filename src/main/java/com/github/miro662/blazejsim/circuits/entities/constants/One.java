@@ -16,7 +16,7 @@ import java.io.Serializable;
  */
 @RegisterEntity(name = "Constants/One")
 public class One extends ClassEntity implements Serializable {
-    @EntityOutput(offset = 15)
+    @EntityOutput(offset = 0)
     public Output y;
 
     @NotNull

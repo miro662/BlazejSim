@@ -92,10 +92,13 @@ public class CircuitView extends JPanel implements MouseListener, EntityChooser.
         }
     }
 
-    public void reset() {
+    public void reset(Circuit circuit) {
+        this.circuit = circuit;
         initializeEntityViews();
         repaint();
     }
+
+
 
     @Override
     public void mouseClicked(MouseEvent e) {

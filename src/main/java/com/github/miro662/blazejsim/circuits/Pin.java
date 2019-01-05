@@ -45,4 +45,8 @@ public class Pin implements Serializable, Evaluable {
     public Connection getConnection() {
         return connection;
     }
+
+    public int getOffset() {
+        return offset;
+    }
 }

@@ -13,10 +13,10 @@ import org.jetbrains.annotations.NotNull;
 
 @RegisterEntity(name = "Logic Gates/NOT")
 public class NotGate extends ClassEntity {
-    @EntityInput(offset = 15)
+    @EntityInput(offset = 0)
     public Input a;
 
-    @EntityOutput(offset = 15)
+    @EntityOutput(offset = 0)
     public Output y;
 
     @NotNull

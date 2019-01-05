@@ -15,6 +15,8 @@ public final class TemporaryEntityView extends EntityView {
         g2d.setColor(Color.BLACK);
         // draw entity itself
         g2d.drawImage(img, centerX - 16, centerY - 16, null);
+
+        drawPins(g2d, centerX, centerY);
     }
 
     public TemporaryEntityView(Entity entity) {
