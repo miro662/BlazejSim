@@ -58,6 +58,8 @@ public abstract class ClassEntity extends Entity {
     }
 
     public ClassEntity() {
+        super();
+
         initializeInputs();
         initializeOutputs();
     }

@@ -1,6 +1,12 @@
 package com.github.miro662.blazejsim.gui.circuit;
 
+import com.github.miro662.blazejsim.circuits.Circuit;
 import com.github.miro662.blazejsim.gui.Parameters;
+import com.github.miro662.blazejsim.gui.circuit.entity_views.EntityView;
+import com.github.miro662.blazejsim.gui.circuit.entity_views.EntityViewFactory;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,10 +14,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class CircuitView extends JPanel implements MouseListener {
-    public CircuitView() {
-        super();
+    private Circuit circuit;
 
+    public CircuitView(Circuit circuit) {
+        super();
+        this.circuit = circuit;
         addMouseListener(this);
+        initializeEntityViews();
     }
 
     @Override
@@ -21,6 +30,7 @@ public class CircuitView extends JPanel implements MouseListener {
         Graphics2D g2d = (Graphics2D) g;
         background(g2d);
         grid(g2d);
+        drawEntityViews(g2d);
     }
 
     private void background(Graphics2D g2d) {
@@ -55,6 +65,27 @@ public class CircuitView extends JPanel implements MouseListener {
                 new Point(x / Parameters.cellSize, y / Parameters.cellSize),
                 new Point(x % Parameters.cellSize - Parameters.getHalfCellSize(), y % Parameters.cellSize - Parameters.getHalfCellSize())
         );
+    }
+
+    private Point toPosition(Point gridPosition) {
+        return new Point(
+                gridPosition.getX() * Parameters.cellSize + Parameters.getHalfCellSize(),
+                gridPosition.getX() * Parameters.cellSize + Parameters.getHalfCellSize()
+        );
+    }
+
+    private List<EntityView> entityViews;
+    private void initializeEntityViews() {
+        entityViews = new LinkedList<>();
+
+        circuit.getEntities().forEach((entity -> entityViews.add(EntityViewFactory.forEntity(entity))));
+    }
+
+    private void drawEntityViews(Graphics2D g2d) {
+        for (EntityView ev : entityViews) {
+            Point pos = toPosition(ev.getEntity().getPosition());
+            ev.draw(g2d, pos.getX(), pos.getY());
+        }
     }
 
     @Override

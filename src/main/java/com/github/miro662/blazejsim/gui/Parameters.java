@@ -16,4 +16,5 @@ public class Parameters {
     public static byte getHalfCellSize() {
         return cellSize / 2;
     }
+    public static byte getGateSize() { return cellSize - 2 * pinSize; }
 }

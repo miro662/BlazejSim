@@ -2,7 +2,9 @@ package com.github.miro662.blazejsim.gui;
 
 import com.github.miro662.blazejsim.circuits.Circuit;
 import com.github.miro662.blazejsim.circuits.entities.base.EntityBase;
+import com.github.miro662.blazejsim.circuits.entities.constants.Zero;
 import com.github.miro662.blazejsim.gui.circuit.CircuitView;
+import com.github.miro662.blazejsim.gui.circuit.Point;
 import com.github.miro662.blazejsim.simulation.Simulation;
 
 import javax.swing.*;
@@ -44,7 +46,11 @@ public class MainWindow extends JFrame {
         entityChooser.addEntityChooseListener((re) -> JOptionPane.showMessageDialog(this, re.getName()));
         add(entityChooser, BorderLayout.LINE_START);
 
-        circuitView = new CircuitView();
+        Zero tmpzero = new Zero();
+        tmpzero.setPosition(new Point(2, 3));
+        circuit.addEntity(tmpzero);
+
+        circuitView = new CircuitView(circuit);
         add(circuitView, BorderLayout.CENTER);
     }
 
