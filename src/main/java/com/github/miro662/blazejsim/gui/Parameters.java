@@ -5,6 +5,7 @@ import java.awt.*;
 public class Parameters {
     public static final byte cellSize = 48;
     public static final byte pinSize = 8;
+    public static final byte pinTolerance = 4;
 
     public static Color menuColor = new Color(192, 192, 192);
     public static Color chooserColor = new Color(224, 224, 224);

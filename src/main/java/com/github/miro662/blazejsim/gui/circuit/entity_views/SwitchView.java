@@ -33,7 +33,7 @@ public class SwitchView extends EntityView {
     }
 
     @Override
-    public void onClick(Point offset) {
+    protected void onClick(Point offset) {
         aSwitch.toggleState();
     }
 }

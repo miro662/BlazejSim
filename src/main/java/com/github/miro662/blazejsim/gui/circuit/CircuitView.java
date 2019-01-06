@@ -2,6 +2,8 @@ package com.github.miro662.blazejsim.gui.circuit;
 
 import com.github.miro662.blazejsim.circuits.Circuit;
 import com.github.miro662.blazejsim.circuits.Connection;
+import com.github.miro662.blazejsim.circuits.Input;
+import com.github.miro662.blazejsim.circuits.Output;
 import com.github.miro662.blazejsim.circuits.entities.Entity;
 import com.github.miro662.blazejsim.circuits.entities.base.RegisteredEntity;
 import com.github.miro662.blazejsim.gui.EntityChooser;
@@ -14,6 +16,7 @@ import com.github.miro662.blazejsim.simulation.SimulationState;
 import com.github.miro662.blazejsim.simulation.StepNotifiable;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.event.MouseMotionListener;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,14 +24,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Optional;
 
-public class CircuitView extends JPanel implements MouseListener, EntityChooser.EntityChooseListener, StepNotifiable {
+public class CircuitView extends JPanel implements MouseListener, MouseMotionListener, EntityChooser.EntityChooseListener, StepNotifiable {
     private Circuit circuit;
 
     public CircuitView(Circuit circuit) {
         super();
         this.circuit = circuit;
         addMouseListener(this);
+        addMouseMotionListener(this);
         initializeEntityViews();
         toCreate = null;
         state = SimulationState.empty();
@@ -43,6 +48,8 @@ public class CircuitView extends JPanel implements MouseListener, EntityChooser.
         grid(g2d);
         drawEntityViews(g2d);
         drawConnections(g2d);
+
+        drawConnectonHint(g2d);
     }
 
     private void background(Graphics2D g2d) {
@@ -152,6 +159,9 @@ public class CircuitView extends JPanel implements MouseListener, EntityChooser.
     public void mouseClicked(MouseEvent e) {
     }
 
+    private Output toConnect;
+    private Point lmp;
+
     @Override
     public void mousePressed(MouseEvent e) {
         if (toCreate != null) {
@@ -170,14 +180,43 @@ public class CircuitView extends JPanel implements MouseListener, EntityChooser.
             }
         } else {
             ClickPoint cp = fromPosition(e.getX(), e.getY());
-            circuit.getEntityAt(cp.getGridPoint()).ifPresent((entity -> getViewForEntity(entity).onClick(cp.getOffset())));
+
+            circuit.getEntityAt(cp.getGridPoint()).ifPresent(entity -> {
+                EntityView ev = getViewForEntity(entity);
+
+                if (e.getButton() == 1) {
+                    ev.clicked(cp.getOffset());
+                    Optional<Output> outputOptional = ev.getOutputPinAt(cp.getOffset());
+                    outputOptional.ifPresent(output -> toConnect = output);
+                    lmp = new Point(e.getX(), e.getY());
+                }
+            });
+
+            repaint();
         }
-        repaint();
+
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        if (toConnect != null) {
+            ClickPoint cp = fromPosition(e.getX(), e.getY());
+            circuit.getEntityAt(cp.getGridPoint()).ifPresent(entity -> {
+                EntityView ev = getViewForEntity(entity);
+                Optional<Input> inputOptional = ev.getInputPinAt(cp.getOffset());
+                inputOptional.ifPresent(input -> {
+                    try {
+                        circuit.connect(toConnect, input);
+                    } catch (Circuit.NotFromCircuitException ex) {
+                        JOptionPane.showMessageDialog(this, "Trying to connect object which is not in this circuit", "BlazejSim", JOptionPane.ERROR_MESSAGE);
+                    } catch (Circuit.AlreadyConnectedInputException ex) {
 
+                    }
+                });
+            });
+        }
+        repaint();
+        toConnect = null;
     }
 
     @Override
@@ -188,6 +227,29 @@ public class CircuitView extends JPanel implements MouseListener, EntityChooser.
     @Override
     public void mouseExited(MouseEvent e) {
 
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        lmp = new Point(e.getX(), e.getY());
+        EventQueue.invokeLater(() -> repaint());
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        lmp = new Point(e.getX(), e.getY());
+        EventQueue.invokeLater(() -> repaint());
+    }
+
+    private void drawConnectonHint(Graphics2D g2d) {
+        g2d.setColor(Parameters.undefinedColor);
+
+        if (toConnect != null) {
+            Point outputPos = toPosition(toConnect.getEntity().getPosition());
+            outputPos.setY(outputPos.getY() + toConnect.getOffset());
+            outputPos.setX(outputPos.getX() + Parameters.getHalfCellSize());
+            g2d.drawLine(outputPos.getX(), outputPos.getY(), lmp.getX(), lmp.getY());
+        }
     }
 
     private RegisteredEntity toCreate;

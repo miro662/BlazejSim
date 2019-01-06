@@ -1,12 +1,14 @@
 package com.github.miro662.blazejsim.gui.circuit.entity_views;
 
 import com.github.miro662.blazejsim.circuits.Input;
+import com.github.miro662.blazejsim.circuits.Output;
 import com.github.miro662.blazejsim.circuits.entities.Entity;
 import com.github.miro662.blazejsim.gui.Parameters;
 import com.github.miro662.blazejsim.simulation.SimulationState;
 import com.github.miro662.blazejsim.gui.circuit.Point;
 
 import java.awt.*;
+import java.util.Optional;
 
 public abstract class EntityView {
     private Entity entity;
@@ -39,5 +41,25 @@ public abstract class EntityView {
         }));
     }
 
-    public void onClick(Point offset) {}
+    public void clicked(Point offset) {
+        if (Math.abs(offset.getX()) < Parameters.getGateSize() / 2 && Math.abs(offset.getY()) < Parameters.getGateSize() / 2) {
+            onClick(offset);
+        }
+    }
+
+    protected void onClick(Point offset) {}
+
+    public Optional<Output> getOutputPinAt(Point offset) {
+        if (offset.getX() < Parameters.getGateSize() / 2) return Optional.empty();
+        return getEntity().getOutputs().filter(output ->
+                Math.abs(offset.getY() - output.getOffset()) <= Parameters.pinTolerance
+        ).findFirst();
+    }
+
+    public Optional<Input> getInputPinAt(Point offset) {
+        if (offset.getX() > - (Parameters.getGateSize() / 2)) return Optional.empty();
+        return getEntity().getInputs().filter(input ->
+                Math.abs(offset.getY() - input.getOffset()) <= Parameters.pinTolerance
+        ).findFirst();
+    }
 }
