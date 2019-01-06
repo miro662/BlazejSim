@@ -14,6 +14,10 @@ public class Parameters {
 
     public static Color pinColor = Color.BLACK;
 
+    public static Color undefinedColor = Color.BLUE;
+    public static Color lowColor = Color.DARK_GRAY;
+    public static Color highColor = Color.RED;
+
     public static byte getHalfCellSize() {
         return cellSize / 2;
     }

@@ -1,5 +1,6 @@
 package com.github.miro662.blazejsim.gui.circuit.entity_views;
 
+import com.github.miro662.blazejsim.circuits.Input;
 import com.github.miro662.blazejsim.circuits.entities.Entity;
 import com.github.miro662.blazejsim.gui.Parameters;
 

@@ -94,6 +94,7 @@ public class MainWindow extends JFrame {
         stopSimulation();
         Simulation newSimulation = new Simulation(circuit);
         newSimulation.start();
+        circuitView.addSimulation(newSimulation);
         simulation = Optional.of(newSimulation);
 
         playButton.setEnabled(false);
@@ -102,7 +103,10 @@ public class MainWindow extends JFrame {
     }
 
     private void stopSimulation() {
-        simulation.ifPresent((Simulation::stop));
+        simulation.ifPresent((simulation) -> {
+            simulation.stop();
+            circuitView.removeSimuation(simulation);
+        });
         simulation = Optional.empty();
 
         playButton.setEnabled(true);

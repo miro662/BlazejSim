@@ -1,12 +1,18 @@
 package com.github.miro662.blazejsim.gui.circuit;
 
 import com.github.miro662.blazejsim.circuits.Circuit;
+import com.github.miro662.blazejsim.circuits.Connection;
 import com.github.miro662.blazejsim.circuits.entities.Entity;
 import com.github.miro662.blazejsim.circuits.entities.base.RegisteredEntity;
 import com.github.miro662.blazejsim.gui.EntityChooser;
 import com.github.miro662.blazejsim.gui.Parameters;
 import com.github.miro662.blazejsim.gui.circuit.entity_views.EntityView;
 import com.github.miro662.blazejsim.gui.circuit.entity_views.EntityViewFactory;
+import com.github.miro662.blazejsim.simulation.LogicState;
+import com.github.miro662.blazejsim.simulation.Simulation;
+import com.github.miro662.blazejsim.simulation.SimulationState;
+import com.github.miro662.blazejsim.simulation.StepNotifiable;
+import com.sun.xml.internal.rngom.digested.DDataPattern;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -16,7 +22,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class CircuitView extends JPanel implements MouseListener, EntityChooser.EntityChooseListener {
+public class CircuitView extends JPanel implements MouseListener, EntityChooser.EntityChooseListener, StepNotifiable {
     private Circuit circuit;
 
     public CircuitView(Circuit circuit) {
@@ -25,6 +31,7 @@ public class CircuitView extends JPanel implements MouseListener, EntityChooser.
         addMouseListener(this);
         initializeEntityViews();
         toCreate = null;
+        state = SimulationState.empty();
     }
 
     @Override
@@ -35,6 +42,7 @@ public class CircuitView extends JPanel implements MouseListener, EntityChooser.
         background(g2d);
         grid(g2d);
         drawEntityViews(g2d);
+        drawConnections(g2d);
     }
 
     private void background(Graphics2D g2d) {
@@ -98,7 +106,42 @@ public class CircuitView extends JPanel implements MouseListener, EntityChooser.
         repaint();
     }
 
+    private void drawConnections(Graphics2D g2d) {
+        circuit.getConnections().forEach(connection -> {
+            g2d.setColor(getColorForConnection(connection));
+            Point outputPosition = toPosition(connection.getOutput().getEntity().getPosition());
+            outputPosition.setY(outputPosition.getY() + connection.getOutput().getOffset());
+            outputPosition.setX(outputPosition.getX() + Parameters.getGateSize() / 2 + Parameters.pinSize);
+            connection.getInputs().forEach((input -> {
+                Point inputPosition = toPosition(input.getEntity().getPosition());
+                inputPosition.setY(inputPosition.getY() + input.getOffset());
+                inputPosition.setX(inputPosition.getX() - Parameters.getGateSize() / 2 - Parameters.pinSize);
+                g2d.drawLine(outputPosition.getX(), outputPosition.getY(), inputPosition.getX(), inputPosition.getY());
+            }));
+        });
+    }
 
+    SimulationState state;
+    @Override
+    public synchronized void notifyStep(SimulationState state) {
+        this.state = state;
+        EventQueue.invokeLater(() -> repaint());
+    }
+
+    public void addSimulation(Simulation simulation) {
+        simulation.addStepNotifyable(this);
+    }
+
+    public void removeSimuation(Simulation simulation) {
+        simulation.deleteStepNotifyable(this);
+    }
+
+    private Color getColorForConnection(Connection connection) {
+        LogicState state = this.state.getFor(connection);
+        if (state == LogicState.HIGH) return Parameters.highColor;
+        else if (state == LogicState.LOW) return Parameters.lowColor;
+        else return Parameters.undefinedColor;
+    }
 
     @Override
     public void mouseClicked(MouseEvent e) {

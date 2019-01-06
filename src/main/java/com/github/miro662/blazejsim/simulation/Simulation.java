@@ -3,10 +3,7 @@ package com.github.miro662.blazejsim.simulation;
 import com.github.miro662.blazejsim.circuits.Circuit;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -25,6 +22,7 @@ public class Simulation {
         //TODO: adjust this
         this.simulationExecutor = Executors.newFixedThreadPool(2);
         timer = new Timer();
+        notifiables = new LinkedList<>();
     }
 
     /**
@@ -73,6 +71,8 @@ public class Simulation {
         }
 
         currentState = ssb.build();
+
+        notifiables.forEach((notifiable -> notifiable.notifyStep(currentState)));
         return currentState;
     }
 
@@ -112,5 +112,15 @@ public class Simulation {
      */
     public synchronized void stop() {
         timer.cancel();
+    }
+
+    private List<StepNotifiable> notifiables;
+
+    public void addStepNotifyable(@NotNull StepNotifiable notifiable) {
+        notifiables.add(notifiable);
+    }
+
+    public void deleteStepNotifyable(@NotNull StepNotifiable notifiable) {
+        notifiables.remove(notifiable);
     }
 }
