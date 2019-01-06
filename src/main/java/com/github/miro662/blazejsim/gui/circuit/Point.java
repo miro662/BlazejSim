@@ -36,4 +36,8 @@ public class Point implements Serializable {
     public String toString() {
         return "(" + getX() + ", " + getY() + ")";
     }
+
+    public boolean equals(Point point) {
+        return this.x == point.x && this.y ==  point.y;
+    }
 }

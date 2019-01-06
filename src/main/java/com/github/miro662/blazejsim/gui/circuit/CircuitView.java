@@ -12,7 +12,7 @@ import com.github.miro662.blazejsim.simulation.LogicState;
 import com.github.miro662.blazejsim.simulation.Simulation;
 import com.github.miro662.blazejsim.simulation.SimulationState;
 import com.github.miro662.blazejsim.simulation.StepNotifiable;
-import com.sun.xml.internal.rngom.digested.DDataPattern;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -96,7 +96,7 @@ public class CircuitView extends JPanel implements MouseListener, EntityChooser.
     private void drawEntityViews(Graphics2D g2d) {
         for (EntityView ev : entityViews) {
             Point pos = toPosition(ev.getEntity().getPosition());
-            ev.draw(g2d, pos.getX(), pos.getY());
+            ev.draw(g2d, pos.getX(), pos.getY(), state);
         }
     }
 
@@ -143,6 +143,11 @@ public class CircuitView extends JPanel implements MouseListener, EntityChooser.
         else return Parameters.undefinedColor;
     }
 
+    @NotNull
+    private EntityView getViewForEntity(@NotNull Entity entity) {
+        return entityViews.stream().filter(ev -> ev.getEntity() == entity).findFirst().get();
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
     }
@@ -163,7 +168,11 @@ public class CircuitView extends JPanel implements MouseListener, EntityChooser.
                 toCreate = null;
                 repaint();
             }
+        } else {
+            ClickPoint cp = fromPosition(e.getX(), e.getY());
+            circuit.getEntityAt(cp.getGridPoint()).ifPresent((entity -> getViewForEntity(entity).onClick(cp.getOffset())));
         }
+        repaint();
     }
 
     @Override

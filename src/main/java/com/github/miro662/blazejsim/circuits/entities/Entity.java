@@ -4,6 +4,8 @@ import com.github.miro662.blazejsim.circuits.Connection;
 import com.github.miro662.blazejsim.circuits.Input;
 import com.github.miro662.blazejsim.circuits.Output;
 import com.github.miro662.blazejsim.gui.circuit.Point;
+import com.github.miro662.blazejsim.gui.circuit.entity_views.EntityView;
+import com.github.miro662.blazejsim.gui.circuit.entity_views.ImageEntityView;
 import com.github.miro662.blazejsim.simulation.LogicState;
 import com.github.miro662.blazejsim.simulation.SimulationState;
 import com.github.miro662.blazejsim.simulation.Stepable;
@@ -105,7 +107,7 @@ public abstract class Entity implements Stepable, Serializable {
         this.position = new Point(0, 0);
     }
 
-    public String getEntityPath() {
-        return "/entities/unknown.png";
+    public EntityView getEntityView() {
+        return new ImageEntityView(this, "/entities/unknown.png");
     }
 }

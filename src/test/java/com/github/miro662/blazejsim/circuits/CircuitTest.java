@@ -1,6 +1,7 @@
 package com.github.miro662.blazejsim.circuits;
 
 import com.github.miro662.blazejsim.circuits.entities.Entity;
+import com.github.miro662.blazejsim.gui.circuit.Point;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -197,5 +198,19 @@ public class CircuitTest {
         assertEquals(0, circuit.getConnections().count());
         verify(output).disconnect();
         verify(input).disconnect();
+    }
+
+    @Test
+    void getEntityAt() {
+        Entity another = mock(Entity.class);
+        when(another.getPosition()).thenReturn(new Point(2, 2));
+        circuit.addEntity(another);
+        Entity entity = mock(Entity.class);
+        when(entity.getPosition()).thenReturn(new Point(2, 1));
+        circuit.addEntity(entity);
+
+        assertEquals(entity, circuit.getEntityAt(new Point(2, 1)).get());
+        assertEquals(another, circuit.getEntityAt(new Point(2, 2)).get());
+        assertFalse(circuit.getEntityAt(new Point(2, 3)).isPresent());
     }
 }

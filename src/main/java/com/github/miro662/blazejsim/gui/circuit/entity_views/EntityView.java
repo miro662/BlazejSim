@@ -3,6 +3,8 @@ package com.github.miro662.blazejsim.gui.circuit.entity_views;
 import com.github.miro662.blazejsim.circuits.Input;
 import com.github.miro662.blazejsim.circuits.entities.Entity;
 import com.github.miro662.blazejsim.gui.Parameters;
+import com.github.miro662.blazejsim.simulation.SimulationState;
+import com.github.miro662.blazejsim.gui.circuit.Point;
 
 import java.awt.*;
 
@@ -17,7 +19,7 @@ public abstract class EntityView {
         this.entity = entity;
     }
 
-    public abstract void draw(Graphics2D g2d, int centerX, int centerY);
+    public abstract void draw(Graphics2D g2d, int centerX, int centerY, SimulationState state);
 
     protected void drawPins(Graphics2D g2d, int centerX, int centerY) {
         g2d.setColor(Parameters.pinColor);
@@ -36,4 +38,6 @@ public abstract class EntityView {
             g2d.drawLine(beginning, vertical, end, vertical);
         }));
     }
+
+    public void onClick(Point offset) {}
 }

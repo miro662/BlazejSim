@@ -1,6 +1,7 @@
 package com.github.miro662.blazejsim.circuits;
 
 import com.github.miro662.blazejsim.circuits.entities.Entity;
+import com.github.miro662.blazejsim.gui.circuit.Point;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -126,6 +127,15 @@ public class Circuit implements Serializable {
      */
     public Stream<Connection> getConnections() {
         return connections.stream();
+    }
+
+    /**
+     * Get entity at given position
+     * @param position expected entity position
+     * @return Optional of entity if there is entity at given position, empty optional if it does not exist
+     */
+    public Optional<Entity> getEntityAt(Point position) {
+        return getEntities().filter((entity -> entity.getPosition().equals(position))).findFirst();
     }
 
     public final class NotFromCircuitException extends Exception {
