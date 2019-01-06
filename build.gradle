@@ -1,10 +1,11 @@
 plugins {
+    id 'com.github.johnrengelman.shadow' version '4.0.3'
     id 'java'
     id 'application'
 }
 
 group 'com.github.miro662'
-version '1.0-SNAPSHOT'
+version 'MVP_no_delete'
 
 sourceCompatibility = 1.8
 
@@ -21,7 +22,13 @@ dependencies {
     )
     testCompile "org.mockito:mockito-core:2.+"
     compile group: 'org.jetbrains', name: 'annotations', version: '13.0'
-    implementation "org.reflections:reflections:0.9.11"
+    compile "org.reflections:reflections:0.9.11"
 }
 
 mainClassName = 'com.github.miro662.blazejsim.BlazejSim'
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}

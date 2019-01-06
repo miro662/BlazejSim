@@ -189,6 +189,24 @@ public class CircuitView extends JPanel implements MouseListener, MouseMotionLis
                     Optional<Output> outputOptional = ev.getOutputPinAt(cp.getOffset());
                     outputOptional.ifPresent(output -> toConnect = output);
                     lmp = new Point(e.getX(), e.getY());
+                } else if (e.getButton() == 3) {
+                        Optional<Output> outputOptional = ev.getOutputPinAt(cp.getOffset());
+                        outputOptional.ifPresent(output -> {
+                            try {
+                                circuit.disconnect(output);
+                            } catch (Circuit.NotFromCircuitException ex) {
+                                JOptionPane.showMessageDialog(this, "Trying to disconnect pin which is not in this circuit", "BlazejSim", JOptionPane.ERROR_MESSAGE);
+                            }
+                        });
+
+                        Optional<Input> inputOptional = ev.getInputPinAt(cp.getOffset());
+                        inputOptional.ifPresent(input -> {
+                            try {
+                                circuit.disconnect(input);
+                            } catch (Circuit.NotFromCircuitException ex) {
+                                JOptionPane.showMessageDialog(this, "Trying to disconnect pin which is not in this circuit", "BlazejSim", JOptionPane.ERROR_MESSAGE);
+                            }
+                        });
                 }
             });
 
