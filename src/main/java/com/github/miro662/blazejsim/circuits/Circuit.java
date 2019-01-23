@@ -4,7 +4,7 @@ import com.github.miro662.blazejsim.circuits.entities.Entity;
 import com.github.miro662.blazejsim.gui.circuit.Point;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -148,6 +148,28 @@ public class Circuit implements Serializable {
         public Entity getEntity() {
             return entity;
         }
+    }
+
+    /**
+     * Saves circuit to file using Java serialization
+     * @param file to where circuit should be saved
+     * @throws IOException exception during trying to save this circuit
+     */
+    public void saveToFile(File file) throws IOException {
+        FileOutputStream fos = new FileOutputStream(file);
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(this);
+        oos.close();
+        fos.close();
+    }
+
+    public static Circuit loadFromFile(File file) throws IOException, ClassNotFoundException {
+        FileInputStream fis = new FileInputStream(file);
+        ObjectInputStream ois = new ObjectInputStream(fis);
+        Circuit c = (Circuit) ois.readObject();
+        ois.close();
+        fis.close();
+        return c;
     }
 
     public class AlreadyConnectedInputException extends Exception {

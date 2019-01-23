@@ -2,24 +2,18 @@ package com.github.miro662.blazejsim.gui;
 
 import com.github.miro662.blazejsim.circuits.Circuit;
 import com.github.miro662.blazejsim.circuits.entities.base.EntityBase;
-import com.github.miro662.blazejsim.circuits.entities.constants.Zero;
 import com.github.miro662.blazejsim.gui.circuit.CircuitView;
-import com.github.miro662.blazejsim.gui.circuit.Point;
-import com.github.miro662.blazejsim.simulation.Simulation;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.io.*;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 
 public class MainWindow extends JFrame {
-    private Circuit circuit;
+    Circuit circuit;
 
     private EntityChooser entityChooser;
     private CircuitView circuitView;
     private SimulationControl simulationControl;
+    private FileControls fileControls;
 
     public MainWindow(Circuit circuit, EntityBase entityBase) {
         super("BlazejSim");
@@ -39,7 +33,8 @@ public class MainWindow extends JFrame {
         this.simulationControl = new SimulationControl(circuit, circuitView);
         topMenu.add(this.simulationControl, BorderLayout.LINE_END);
 
-        topMenu.add(createFileMenu(), BorderLayout.LINE_START);
+        this.fileControls = new FileControls(this);
+        topMenu.add(this.fileControls, BorderLayout.LINE_START);
 
         entityChooser = new EntityChooser(entityBase);
         add(entityChooser, BorderLayout.LINE_START);
@@ -47,64 +42,10 @@ public class MainWindow extends JFrame {
         entityChooser.addEntityChooseListener(circuitView);
     }
 
-    private JPanel createFileMenu() {
-        JPanel fileMenu = new JPanel(new FlowLayout());
-
-        JButton newFileButton = new JButton("New");
-        newFileButton.addActionListener((e) -> initForCircuit(new Circuit()));
-        fileMenu.add(newFileButton);
-
-        JButton openFileButton = new JButton("Open");
-        openFileButton.addActionListener((e) -> openFile());
-        fileMenu.add(openFileButton);
-
-        JButton saveFileButton = new JButton("Save");
-        saveFileButton.addActionListener((e) -> saveFile());
-        fileMenu.add(saveFileButton);
-
-        fileMenu.setBackground(Parameters.menuColor);
-        return fileMenu;
-    }
-
-    private void openFile() {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setFileFilter(new FileNameExtensionFilter("BlazejSim circuit", "bsim"));
-        int result = chooser.showOpenDialog(this);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            try {
-                FileInputStream fis = new FileInputStream(chooser.getSelectedFile());
-                ObjectInputStream ois = new ObjectInputStream(fis);
-                Circuit c = (Circuit) ois.readObject();
-                ois.close();
-                fis.close();
-
-                initForCircuit(c);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void saveFile() {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setFileFilter(new FileNameExtensionFilter("BlazejSim circuit", "bsim"));
-        int result = chooser.showSaveDialog(this);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            try {
-                FileOutputStream fos = new FileOutputStream(chooser.getSelectedFile());
-                ObjectOutputStream oos = new ObjectOutputStream(fos);
-                oos.writeObject(circuit);
-                oos.close();
-                fos.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void initForCircuit(Circuit circuit) {
+    void initForCircuit(Circuit circuit) {
         simulationControl.stopSimulation();
         this.circuit = circuit;
         circuitView.reset(this.circuit);
+        simulationControl.initForCircuit(circuit);
     }
 }

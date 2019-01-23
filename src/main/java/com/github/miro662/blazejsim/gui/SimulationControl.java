@@ -126,4 +126,8 @@ public class SimulationControl extends JPanel {
             }
         }));
     }
+
+    void initForCircuit(Circuit circuit) {
+        this.circuit = circuit;
+    }
 }
