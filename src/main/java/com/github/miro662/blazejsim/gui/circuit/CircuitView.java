@@ -141,6 +141,7 @@ public class CircuitView extends JPanel implements MouseListener, MouseMotionLis
 
     public void removeSimuation(Simulation simulation) {
         simulation.deleteStepNotifyable(this);
+        state = SimulationState.empty();
     }
 
     private Color getColorForConnection(Connection connection) {

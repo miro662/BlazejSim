@@ -12,24 +12,18 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.*;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 public class MainWindow extends JFrame {
     private Circuit circuit;
-    private EntityBase entityBase;
-
-    private Optional<Simulation> simulation;
-    private JButton playButton;
-    private JButton stopButton;
-    private JButton pauseButton;
 
     private EntityChooser entityChooser;
     private CircuitView circuitView;
+    private SimulationControl simulationControl;
 
     public MainWindow(Circuit circuit, EntityBase entityBase) {
         super("BlazejSim");
         this.circuit = circuit;
-        this.entityBase = entityBase;
-        this.simulation = Optional.empty();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
@@ -39,14 +33,17 @@ public class MainWindow extends JFrame {
         topMenu.setBackground(Parameters.menuColor);
         add(topMenu, BorderLayout.PAGE_START);
 
-        topMenu.add(createSimulationMenu(), BorderLayout.LINE_END);
+        circuitView = new CircuitView(circuit);
+        add(circuitView, BorderLayout.CENTER);
+
+        this.simulationControl = new SimulationControl(circuit, circuitView);
+        topMenu.add(this.simulationControl, BorderLayout.LINE_END);
+
         topMenu.add(createFileMenu(), BorderLayout.LINE_START);
 
         entityChooser = new EntityChooser(entityBase);
         add(entityChooser, BorderLayout.LINE_START);
 
-        circuitView = new CircuitView(circuit);
-        add(circuitView, BorderLayout.CENTER);
         entityChooser.addEntityChooseListener(circuitView);
     }
 
@@ -54,7 +51,7 @@ public class MainWindow extends JFrame {
         JPanel fileMenu = new JPanel(new FlowLayout());
 
         JButton newFileButton = new JButton("New");
-        newFileButton.addActionListener((e) -> initForCircuit(prepareNewCircuit()));
+        newFileButton.addActionListener((e) -> initForCircuit(new Circuit()));
         fileMenu.add(newFileButton);
 
         JButton openFileButton = new JButton("Open");
@@ -67,59 +64,6 @@ public class MainWindow extends JFrame {
 
         fileMenu.setBackground(Parameters.menuColor);
         return fileMenu;
-    }
-
-    private JPanel createSimulationMenu() {
-        JPanel simulationMenu = new JPanel(new FlowLayout());
-
-        playButton = new JButton("Play");
-        playButton.addActionListener((e) -> startSimulation());
-        simulationMenu.add(playButton);
-
-        pauseButton = new JButton("Pause");
-        pauseButton.setEnabled(false);
-        pauseButton.addActionListener((e) -> pauseSimulation());
-        simulationMenu.add(pauseButton);
-
-        stopButton = new JButton("Stop");
-        stopButton.setEnabled(false);
-        stopButton.addActionListener((e) -> stopSimulation());
-        simulationMenu.add(stopButton);
-
-        simulationMenu.setBackground(Parameters.menuColor);
-        return simulationMenu;
-    }
-
-    private void startSimulation() {
-        stopSimulation();
-        Simulation newSimulation = new Simulation(circuit);
-        newSimulation.start();
-        circuitView.addSimulation(newSimulation);
-        simulation = Optional.of(newSimulation);
-
-        playButton.setEnabled(false);
-        pauseButton.setEnabled(true);
-        stopButton.setEnabled(true);
-    }
-
-    private void stopSimulation() {
-        simulation.ifPresent((simulation) -> {
-            simulation.stop();
-            circuitView.removeSimuation(simulation);
-        });
-        simulation = Optional.empty();
-
-        playButton.setEnabled(true);
-        pauseButton.setEnabled(false);
-        stopButton.setEnabled(false);
-    }
-
-    private void pauseSimulation() {
-        simulation.ifPresent((Simulation::stop));
-
-        playButton.setEnabled(true);
-        pauseButton.setEnabled(false);
-        stopButton.setEnabled(true);
     }
 
     private void openFile() {
@@ -158,14 +102,8 @@ public class MainWindow extends JFrame {
         }
     }
 
-    //TODO: delete this method
-    //It is necessary until I'll make circuit edition facilities, only once
-    private Circuit prepareNewCircuit() {
-        return new Circuit();
-    }
-
     private void initForCircuit(Circuit circuit) {
-        stopSimulation();
+        simulationControl.stopSimulation();
         this.circuit = circuit;
         circuitView.reset(this.circuit);
     }
