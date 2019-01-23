@@ -110,4 +110,14 @@ public abstract class Entity implements Stepable, Serializable {
     public EntityView getEntityView() {
         return new ImageEntityView(this, "/entities/unknown.png");
     }
+
+    /**
+     * Checks if entity is connected to anything
+     * @return true if entity is connected to anything
+     */
+    public boolean isConnectedToAnything() {
+        boolean anyInputConnected = getInputs().anyMatch(input -> input.getConnection() != null);
+        boolean anyOutputConnected = getOutputs().anyMatch(output -> output.getConnection() != null);
+        return anyInputConnected || anyOutputConnected;
+    }
 }

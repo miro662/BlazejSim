@@ -41,8 +41,12 @@ public abstract class EntityView {
         }));
     }
 
+    public boolean inEntity(Point offset) {
+        return Math.abs(offset.getX()) < Parameters.getGateSize() / 2 && Math.abs(offset.getY()) < Parameters.getGateSize() / 2;
+    }
+
     public void clicked(Point offset) {
-        if (Math.abs(offset.getX()) < Parameters.getGateSize() / 2 && Math.abs(offset.getY()) < Parameters.getGateSize() / 2) {
+        if (inEntity(offset)) {
             onClick(offset);
         }
     }

@@ -161,6 +161,8 @@ public class CircuitView extends JPanel implements MouseListener, MouseMotionLis
     private Input toConnectInput;
     private Point lmp;
 
+    private ClickPoint pressedCell;
+
     @Override
     public void mousePressed(MouseEvent e) {
         if (toCreate != null) {
@@ -178,41 +180,48 @@ public class CircuitView extends JPanel implements MouseListener, MouseMotionLis
                 repaint();
             }
         } else {
-            ClickPoint cp = fromPosition(e.getX(), e.getY());
-
-            circuit.getEntityAt(cp.getGridPoint()).ifPresent(entity -> {
+            pressedCell = fromPosition(e.getX(), e.getY());
+            circuit.getEntityAt(pressedCell.getGridPoint()).ifPresent(entity -> {
                 EntityView ev = getViewForEntity(entity);
 
                 if (e.getButton() == 1) {
-                    ev.clicked(cp.getOffset());
-
-                    Optional<Output> outputOptional = ev.getOutputPinAt(cp.getOffset());
+                    Optional<Output> outputOptional = ev.getOutputPinAt(pressedCell.getOffset());
                     outputOptional.ifPresent(output -> toConnectOutput = output);
 
-                    Optional<Input> inputOptional = ev.getInputPinAt(cp.getOffset());
+                    Optional<Input> inputOptional = ev.getInputPinAt(pressedCell.getOffset());
                     inputOptional.ifPresent(input -> {
                         toConnectInput = input;
                     });
 
                     lmp = new Point(e.getX(), e.getY());
                 } else if (e.getButton() == 3) {
-                        Optional<Output> outputOptional = ev.getOutputPinAt(cp.getOffset());
-                        outputOptional.ifPresent(output -> {
-                            try {
-                                circuit.disconnect(output);
-                            } catch (Circuit.NotFromCircuitException ex) {
-                                JOptionPane.showMessageDialog(this, "Trying to disconnect pin which is not in this circuit", "BlazejSim", JOptionPane.ERROR_MESSAGE);
-                            }
-                        });
+                    Optional<Output> outputOptional = ev.getOutputPinAt(pressedCell.getOffset());
+                    outputOptional.ifPresent(output -> {
+                        try {
+                            circuit.disconnect(output);
+                        } catch (Circuit.NotFromCircuitException ex) {
+                            JOptionPane.showMessageDialog(this, "Trying to disconnect pin which is not in this circuit", "BlazejSim", JOptionPane.ERROR_MESSAGE);
+                        }
+                    });
 
-                        Optional<Input> inputOptional = ev.getInputPinAt(cp.getOffset());
-                        inputOptional.ifPresent(input -> {
-                            try {
-                                circuit.disconnect(input);
-                            } catch (Circuit.NotFromCircuitException ex) {
-                                JOptionPane.showMessageDialog(this, "Trying to disconnect pin which is not in this circuit", "BlazejSim", JOptionPane.ERROR_MESSAGE);
-                            }
-                        });
+                    Optional<Input> inputOptional = ev.getInputPinAt(pressedCell.getOffset());
+                    inputOptional.ifPresent(input -> {
+                        try {
+                            circuit.disconnect(input);
+                        } catch (Circuit.NotFromCircuitException ex) {
+                            JOptionPane.showMessageDialog(this, "Trying to disconnect pin which is not in this circuit", "BlazejSim", JOptionPane.ERROR_MESSAGE);
+                        }
+                    });
+
+                    if (ev.inEntity(pressedCell.getOffset())) {
+                        try {
+                            circuit.deleteEntity(entity);
+                            entityViews.remove(ev);
+                        } catch (Circuit.TryingToDeleteConnectedEntity tryingToDeleteConnectedEntity) {
+                            JOptionPane.showMessageDialog(this, "Cannot delete entity that is connected to something");
+                        }
+                        EventQueue.invokeLater(() -> repaint());
+                    }
                 }
             });
 
@@ -224,6 +233,21 @@ public class CircuitView extends JPanel implements MouseListener, MouseMotionLis
     @Override
     public void mouseReleased(MouseEvent e) {
         ClickPoint cp = fromPosition(e.getX(), e.getY());
+
+        if (pressedCell != null) {
+            circuit.getEntityAt(pressedCell.getGridPoint()).ifPresent(entity -> {
+                EntityView ev = getViewForEntity(entity);
+                if (cp.getGridPoint().equals(pressedCell.getGridPoint())) {
+                    ev.clicked(cp.getOffset());
+                } else {
+                    if (ev.inEntity(pressedCell.getOffset())) {
+                        entity.setPosition(cp.getGridPoint());
+                    }
+                }
+            });
+        }
+        pressedCell = null;
+
         circuit.getEntityAt(cp.getGridPoint()).ifPresent(entity -> {
             EntityView ev = getViewForEntity(entity);
             if (toConnectOutput != null) {

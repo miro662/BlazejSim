@@ -35,10 +35,14 @@ public class Circuit implements Serializable {
     /**
      * Delete entity from circuit
      * @param entity entity to be removed
+     * @throws TryingToDeleteConnectedEntity when trying to delete entity that is connected to something
      */
-    public void deleteEntity(@NotNull Entity entity) {
-        entity.disconnectAll();
-        entities.remove(entity);
+    public void deleteEntity(@NotNull Entity entity) throws TryingToDeleteConnectedEntity {
+        if (!entity.isConnectedToAnything()) {
+            entities.remove(entity);
+        } else {
+            throw new TryingToDeleteConnectedEntity();
+        }
     }
 
     /**
@@ -163,6 +167,13 @@ public class Circuit implements Serializable {
         fos.close();
     }
 
+    /**
+     * Load circuit from file using Java serialization
+     * @param file from where circuit should be loaded
+     * @return loaded file
+     * @throws IOException exception during trying to load file
+     * @throws ClassNotFoundException one of used entities wasn't found in this version
+     */
     public static Circuit loadFromFile(File file) throws IOException, ClassNotFoundException {
         FileInputStream fis = new FileInputStream(file);
         ObjectInputStream ois = new ObjectInputStream(fis);
@@ -173,6 +184,10 @@ public class Circuit implements Serializable {
     }
 
     public class AlreadyConnectedInputException extends Exception {
+
+    }
+
+    public class TryingToDeleteConnectedEntity extends Exception {
 
     }
 }
