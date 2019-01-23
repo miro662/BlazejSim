@@ -125,11 +125,11 @@ public class CircuitView extends JPanel implements MouseListener, MouseMotionLis
         });
     }
 
-    SimulationState state;
+     private SimulationState state;
     @Override
     public synchronized void notifyStep(SimulationState state) {
         this.state = state;
-        EventQueue.invokeLater(() -> repaint());
+        EventQueue.invokeLater(this::repaint);
     }
 
     public void addSimulation(Simulation simulation) {
@@ -189,9 +189,7 @@ public class CircuitView extends JPanel implements MouseListener, MouseMotionLis
                     outputOptional.ifPresent(output -> toConnectOutput = output);
 
                     Optional<Input> inputOptional = ev.getInputPinAt(pressedCell.getOffset());
-                    inputOptional.ifPresent(input -> {
-                        toConnectInput = input;
-                    });
+                    inputOptional.ifPresent(input -> toConnectInput = input);
 
                     lmp = new Point(e.getX(), e.getY());
                 } else if (e.getButton() == 3) {
@@ -240,7 +238,7 @@ public class CircuitView extends JPanel implements MouseListener, MouseMotionLis
                 if (cp.getGridPoint().equals(pressedCell.getGridPoint())) {
                     ev.clicked(cp.getOffset());
                 } else {
-                    if (ev.inEntity(pressedCell.getOffset())) {
+                    if (ev.inEntity(pressedCell.getOffset()) && !circuit.getEntityAt(cp.getGridPoint()).isPresent()) {
                         entity.setPosition(cp.getGridPoint());
                     }
                 }

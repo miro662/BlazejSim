@@ -116,15 +116,7 @@ public class SimulationControl extends JPanel {
     }
 
     private void stepSimulation() {
-        simulation.ifPresent((simulation1 -> {
-            try {
-                simulation1.next();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-        }));
+        simulation.ifPresent((Simulation::next));
     }
 
     void initForCircuit(Circuit circuit) {

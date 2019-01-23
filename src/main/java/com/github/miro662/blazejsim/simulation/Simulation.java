@@ -1,6 +1,7 @@
 package com.github.miro662.blazejsim.simulation;
 
 import com.github.miro662.blazejsim.circuits.Circuit;
+import com.github.miro662.blazejsim.circuits.entities.Entity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -14,13 +15,12 @@ import java.util.stream.Stream;
 public class Simulation {
     private Circuit circuit;
     private SimulationState currentState;
-    private ExecutorService simulationExecutor;
-    private Thread simulationThread;
+    private ForkJoinPool frpool;
     private Timer timer;
 
     private void initializeExecutor() {
         //TODO: adjust this
-        this.simulationExecutor = Executors.newFixedThreadPool(2);
+        this.frpool = ForkJoinPool.commonPool();
         timer = new Timer();
         notifiables = new LinkedList<>();
     }
@@ -59,35 +59,56 @@ public class Simulation {
      * Simulates 1 execution step
      * @return next execution step
      */
-    public synchronized SimulationState next() throws InterruptedException, ExecutionException {
-        // could be written using parallel streams, used threadpools for learning reasons
-        SimulationStateBuilder ssb = new SimulationStateBuilder();
-
-        Stream<SimulationTask> simulationTasks = circuit.getEntities().map((entity -> new SimulationTask(entity, currentState)));
-        Collection<SimulationTask> simulationTasksCollection = simulationTasks.collect(Collectors.toList());
-        List<Future<SimulationState>> futures = simulationExecutor.invokeAll(simulationTasksCollection);
-        for (Future<SimulationState> future : futures) {
-            ssb.join(future.get());
-        }
-
-        currentState = ssb.build();
-
+    public synchronized SimulationState next()  {
+        SimulationTask task = SimulationTask.fromEntitiesList(circuit.getEntities(), currentState);
+        currentState = this.frpool.invoke(task);
         notifiables.forEach((notifiable -> notifiable.notifyStep(currentState)));
         return currentState;
     }
 
-    class SimulationTask implements Callable<SimulationState> {
-        Stepable toSimulate;
+    static class SimulationTask extends RecursiveTask<SimulationState> {
+        private Stepable[] stepables;
+        private int start;
+        private int stop;
+
+        private final int MAX_ENTITIES_PER_THREAD = 4;
+
         SimulationState oldState;
 
         @Override
-        public SimulationState call() {
-            return toSimulate.step(oldState);
+        public SimulationState compute() {
+            SimulationStateBuilder ssb = new SimulationStateBuilder();
+            int no_of_entities = stop - start;
+            if (no_of_entities <= MAX_ENTITIES_PER_THREAD) {
+                for (int i = start; i < stop; ++i) {
+                    SimulationState ss = stepables[i].step(oldState);
+                    ssb.join(ss);
+                }
+            } else {
+                SimulationTask firstTask = new SimulationTask(stepables, start, (no_of_entities / 2), oldState);
+                SimulationTask secondTask = new SimulationTask(stepables, start + (no_of_entities / 2), stop, oldState);
+                secondTask.fork();
+                ssb.join(firstTask.compute());
+                ssb.join(secondTask.join());
+            }
+            return ssb.build();
         }
 
-        SimulationTask(Stepable toSimulate, SimulationState oldState) {
-            this.toSimulate = toSimulate;
+        private SimulationTask(Stepable[] stepables, int start, int stop, SimulationState oldState) {
+            this.stepables = stepables;
+            this.start = start;
+            this.stop = stop;
             this.oldState = oldState;
+        }
+
+        static SimulationTask fromEntitiesList(Stream<Entity> entities, SimulationState oldState) {
+            Stepable[] stepables = entities.toArray(Stepable[]::new);
+            return new SimulationTask(
+                    stepables,
+                    0,
+                    stepables.length,
+                    oldState
+            );
         }
     }
 
