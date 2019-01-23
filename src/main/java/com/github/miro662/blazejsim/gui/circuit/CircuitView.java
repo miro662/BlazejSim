@@ -1,9 +1,6 @@
 package com.github.miro662.blazejsim.gui.circuit;
 
-import com.github.miro662.blazejsim.circuits.Circuit;
-import com.github.miro662.blazejsim.circuits.Connection;
-import com.github.miro662.blazejsim.circuits.Input;
-import com.github.miro662.blazejsim.circuits.Output;
+import com.github.miro662.blazejsim.circuits.*;
 import com.github.miro662.blazejsim.circuits.entities.Entity;
 import com.github.miro662.blazejsim.circuits.entities.base.RegisteredEntity;
 import com.github.miro662.blazejsim.gui.EntityChooser;
@@ -160,7 +157,8 @@ public class CircuitView extends JPanel implements MouseListener, MouseMotionLis
     public void mouseClicked(MouseEvent e) {
     }
 
-    private Output toConnect;
+    private Output toConnectOutput;
+    private Input toConnectInput;
     private Point lmp;
 
     @Override
@@ -187,8 +185,15 @@ public class CircuitView extends JPanel implements MouseListener, MouseMotionLis
 
                 if (e.getButton() == 1) {
                     ev.clicked(cp.getOffset());
+
                     Optional<Output> outputOptional = ev.getOutputPinAt(cp.getOffset());
-                    outputOptional.ifPresent(output -> toConnect = output);
+                    outputOptional.ifPresent(output -> toConnectOutput = output);
+
+                    Optional<Input> inputOptional = ev.getInputPinAt(cp.getOffset());
+                    inputOptional.ifPresent(input -> {
+                        toConnectInput = input;
+                    });
+
                     lmp = new Point(e.getX(), e.getY());
                 } else if (e.getButton() == 3) {
                         Optional<Output> outputOptional = ev.getOutputPinAt(cp.getOffset());
@@ -218,24 +223,37 @@ public class CircuitView extends JPanel implements MouseListener, MouseMotionLis
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (toConnect != null) {
-            ClickPoint cp = fromPosition(e.getX(), e.getY());
-            circuit.getEntityAt(cp.getGridPoint()).ifPresent(entity -> {
-                EntityView ev = getViewForEntity(entity);
+        ClickPoint cp = fromPosition(e.getX(), e.getY());
+        circuit.getEntityAt(cp.getGridPoint()).ifPresent(entity -> {
+            EntityView ev = getViewForEntity(entity);
+            if (toConnectOutput != null) {
                 Optional<Input> inputOptional = ev.getInputPinAt(cp.getOffset());
                 inputOptional.ifPresent(input -> {
                     try {
-                        circuit.connect(toConnect, input);
+                        circuit.connect(toConnectOutput, input);
                     } catch (Circuit.NotFromCircuitException ex) {
                         JOptionPane.showMessageDialog(this, "Trying to connect object which is not in this circuit", "BlazejSim", JOptionPane.ERROR_MESSAGE);
-                    } catch (Circuit.AlreadyConnectedInputException ex) {
+                    } catch (Circuit.AlreadyConnectedInputException ignored) {
 
                     }
                 });
-            });
-        }
-        repaint();
-        toConnect = null;
+            }
+            if (toConnectInput != null) {
+                Optional<Output> outputOptional = ev.getOutputPinAt(cp.getOffset());
+                outputOptional.ifPresent(output -> {
+                    try {
+                        circuit.connect(output, toConnectInput);
+                    } catch (Circuit.NotFromCircuitException ex) {
+                        JOptionPane.showMessageDialog(this, "Trying to connect object which is not in this circuit", "BlazejSim", JOptionPane.ERROR_MESSAGE);
+                    } catch (Circuit.AlreadyConnectedInputException ignored) {
+
+                    }
+                });
+            }
+        });
+        EventQueue.invokeLater(() -> repaint());
+        toConnectOutput = null;
+        toConnectInput = null;
     }
 
     @Override
@@ -263,10 +281,12 @@ public class CircuitView extends JPanel implements MouseListener, MouseMotionLis
     private void drawConnectonHint(Graphics2D g2d) {
         g2d.setColor(Parameters.undefinedColor);
 
-        if (toConnect != null) {
-            Point outputPos = toPosition(toConnect.getEntity().getPosition());
-            outputPos.setY(outputPos.getY() + toConnect.getOffset());
-            outputPos.setX(outputPos.getX() + Parameters.getHalfCellSize());
+        if (toConnectOutput != null || toConnectInput != null) {
+            Pin toConnectPin = toConnectOutput != null ? toConnectOutput : toConnectInput;
+            int direction = toConnectOutput != null ? 1 : -1;
+            Point outputPos = toPosition(toConnectPin.getEntity().getPosition());
+            outputPos.setY(outputPos.getY() + toConnectPin.getOffset());
+            outputPos.setX(outputPos.getX() + Parameters.getHalfCellSize() * direction);
             g2d.drawLine(outputPos.getX(), outputPos.getY(), lmp.getX(), lmp.getY());
         }
     }

@@ -88,9 +88,12 @@ public class Connection implements Serializable, Evaluable {
         }
     }
 
+    /**
+     * Disconnect all inputs connected to this connection
+     */
     public void disconnectInputs() {
         for (Input input : inputs) {
-            disconnectInput(input);
+            input.disconnect();
         }
         inputs.clear();
     }
