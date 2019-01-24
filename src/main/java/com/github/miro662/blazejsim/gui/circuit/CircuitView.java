@@ -189,7 +189,9 @@ public class CircuitView extends JPanel implements MouseListener, MouseMotionLis
                     outputOptional.ifPresent(output -> toConnectOutput = output);
 
                     Optional<Input> inputOptional = ev.getInputPinAt(pressedCell.getOffset());
-                    inputOptional.ifPresent(input -> toConnectInput = input);
+                    inputOptional.ifPresent(input -> {
+                            toConnectInput = input;
+                    });
 
                     lmp = new Point(e.getX(), e.getY());
                 } else if (e.getButton() == 3) {

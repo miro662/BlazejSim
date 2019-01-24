@@ -9,7 +9,7 @@ public class ExpressionWindow extends JFrame {
     JTextField expressionField;
 
     ExpressionWindow(CustomEntity entity) {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setVisible(true);
         setSize(200, 100);
         setTitle("Expression editor");

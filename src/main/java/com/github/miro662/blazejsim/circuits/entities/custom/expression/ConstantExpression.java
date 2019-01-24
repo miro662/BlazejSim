@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * Expression returning given constant
  */
-public final class ConstantExpression implements Expression, Serializable {
+public class ConstantExpression implements Expression, Serializable {
     private LogicState state;
 
     /**
