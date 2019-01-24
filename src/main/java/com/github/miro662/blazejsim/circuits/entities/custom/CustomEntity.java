@@ -5,6 +5,8 @@ import com.github.miro662.blazejsim.circuits.Output;
 import com.github.miro662.blazejsim.circuits.entities.Entity;
 import com.github.miro662.blazejsim.circuits.entities.base.RegisterEntity;
 import com.github.miro662.blazejsim.circuits.entities.custom.expression.*;
+import com.github.miro662.blazejsim.circuits.entities.custom.expression.parser.ParseException;
+import com.github.miro662.blazejsim.circuits.entities.custom.expression.parser.Parser;
 import com.github.miro662.blazejsim.gui.circuit.entity_views.CustomEntityView;
 import com.github.miro662.blazejsim.gui.circuit.entity_views.EntityView;
 import com.github.miro662.blazejsim.simulation.LogicState;
@@ -26,6 +28,7 @@ public class CustomEntity extends Entity implements Serializable {
     private Expression expression;
     private Output output;
     private HashMap<String, Input> inputs;
+    private String expressionString;
 
     @NotNull
     @Override
@@ -53,16 +56,8 @@ public class CustomEntity extends Entity implements Serializable {
 
     public CustomEntity () {
         output = new Output(this, 0);
-        setExpression(new NotExpression(new AndExpression(
-                new OrExpression(
-                        new ParameterExpression("a"),
-                        new ParameterExpression("b")
-                ),
-                new OrExpression(
-                        new ParameterExpression("A"),
-                        new ParameterExpression("B")
-                ))
-        ));
+        expressionString = "";
+        setExpression(new ConstantExpression());
     }
 
     public synchronized void setExpression(Expression expression) {
@@ -74,6 +69,16 @@ public class CustomEntity extends Entity implements Serializable {
             inputs.put(name, new Input(this, offset));
             offset += 8;
         }
+    }
+
+    public void setExpressionString(String str) throws ParseException {
+        Parser parser = new Parser();
+        setExpression(parser.parse(str));
+        this.expressionString = str;
+    }
+
+    public String getExpressionString() {
+        return expressionString;
     }
 
     @Nullable

@@ -1,7 +1,7 @@
 package com.github.miro662.blazejsim.gui.circuit.entity_views;
 
-import com.github.miro662.blazejsim.circuits.entities.Entity;
 import com.github.miro662.blazejsim.circuits.entities.custom.CustomEntity;
+import com.github.miro662.blazejsim.gui.circuit.CircuitView;
 import com.github.miro662.blazejsim.gui.circuit.Point;
 import com.github.miro662.blazejsim.simulation.SimulationState;
 
@@ -29,7 +29,7 @@ public final class CustomEntityView extends EntityView {
     }
 
     @Override
-    protected void onClick(Point offset) {
-        EventQueue.invokeLater(() -> new ExpressionWindow(this.entity));
+    protected void onClick(Point offset, CircuitView circuitView) {
+        EventQueue.invokeLater(() -> new ExpressionWindow(circuitView, this.entity));
     }
 }

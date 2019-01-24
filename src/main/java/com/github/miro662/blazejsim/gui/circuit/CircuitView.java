@@ -238,7 +238,7 @@ public class CircuitView extends JPanel implements MouseListener, MouseMotionLis
             circuit.getEntityAt(pressedCell.getGridPoint()).ifPresent(entity -> {
                 EntityView ev = getViewForEntity(entity);
                 if (cp.getGridPoint().equals(pressedCell.getGridPoint())) {
-                    ev.clicked(cp.getOffset());
+                    ev.clicked(cp.getOffset(), this);
                 } else {
                     if (ev.inEntity(pressedCell.getOffset()) && !circuit.getEntityAt(cp.getGridPoint()).isPresent()) {
                         entity.setPosition(cp.getGridPoint());

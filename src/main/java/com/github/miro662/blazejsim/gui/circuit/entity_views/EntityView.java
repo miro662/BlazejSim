@@ -4,6 +4,7 @@ import com.github.miro662.blazejsim.circuits.Input;
 import com.github.miro662.blazejsim.circuits.Output;
 import com.github.miro662.blazejsim.circuits.entities.Entity;
 import com.github.miro662.blazejsim.gui.Parameters;
+import com.github.miro662.blazejsim.gui.circuit.CircuitView;
 import com.github.miro662.blazejsim.simulation.SimulationState;
 import com.github.miro662.blazejsim.gui.circuit.Point;
 
@@ -55,13 +56,13 @@ public abstract class EntityView {
         return Math.abs(offset.getX()) < Parameters.getGateSize() / 2 && Math.abs(offset.getY()) < Parameters.getGateSize() / 2;
     }
 
-    public void clicked(Point offset) {
+    public void clicked(Point offset, CircuitView circuitView) {
         if (inEntity(offset)) {
-            onClick(offset);
+            onClick(offset, circuitView);
         }
     }
 
-    protected void onClick(Point offset) {}
+    protected void onClick(Point offset, CircuitView circuitView) {}
 
     public Optional<Output> getOutputPinAt(Point offset) {
         if (offset.getX() < Parameters.getGateSize() / 2) return Optional.empty();
