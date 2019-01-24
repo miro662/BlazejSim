@@ -19,6 +19,30 @@ public class Parser {
             // constant or parameter
             return getConstant(str.charAt(from));
         }
+
+        Object operation = null;
+
+        int parentheisisCount = 0;
+        for (int i = from; i < to; ++i) {
+            char c = str.charAt(i);
+            if (c == '(') {
+                parentheisisCount++;
+            } else if (c == ')') {
+                parentheisisCount--;
+                if (parentheisisCount < 0) {
+                    throw new ParseException();
+                }
+            }
+        }
+
+        if (parentheisisCount != 0) {
+            throw new ParseException();
+        }
+
+        if (operation == null && str.charAt(from) == '(' && str.charAt(to - 1) == ')') {
+            return parseFromTo(str, from + 1, to - 1);
+        }
+
         throw new ParseException();
     }
 
