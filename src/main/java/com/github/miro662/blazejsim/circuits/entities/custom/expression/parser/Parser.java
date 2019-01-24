@@ -21,7 +21,6 @@ public class Parser {
     }
 
     Expression parseFromTo(String str, int from, int to) throws ParseException {
-        System.out.println("parse " + from + "-" + to);
         int length = to - from;
         if (length < 1) {
             throw new ParseException("Trying to parse empty expression", from);
@@ -48,7 +47,7 @@ public class Parser {
                     throw new ParseException("Cannot find corresponding opening parenthesis for closing one", i);
                 }
             } else if (Character.isLetterOrDigit(c) || Character.isWhitespace(c)) {
-                // skip in such case
+                // skip in such case - whitespace or constant/parameter handled in other place
             } else if (parenthesesCount == 0) {
                 Operation operation = operations.get(c);
                 if (operation != null) {

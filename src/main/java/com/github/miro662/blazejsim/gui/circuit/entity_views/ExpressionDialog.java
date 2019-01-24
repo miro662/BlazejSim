@@ -32,6 +32,8 @@ public class ExpressionDialog extends JDialog {
                 EventQueue.invokeLater(view::repaint);
             } catch (ParseException e) {
                 JOptionPane.showMessageDialog(this, e.getMessage() + ", at: " + e.getAt());
+            } catch (CustomEntity.CannotModifyInputsOfConnectedEntity e) {
+                JOptionPane.showMessageDialog(this, "Cannot modify inputs of connected entity");
             }
         });
         this.add(saveButton, BorderLayout.PAGE_END);

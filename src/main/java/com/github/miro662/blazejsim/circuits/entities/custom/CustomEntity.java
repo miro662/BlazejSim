@@ -16,8 +16,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -54,24 +57,35 @@ public class CustomEntity extends Entity implements Serializable {
         return new CustomEntityView(this);
     }
 
-    public CustomEntity () {
+    public CustomEntity () throws CannotModifyInputsOfConnectedEntity {
         output = new Output(this, 0);
         expressionString = "";
+        inputs = new HashMap<>();
         setExpression(new ConstantExpression());
     }
 
-    public synchronized void setExpression(Expression expression) {
+    public synchronized void setExpression(Expression expression) throws CannotModifyInputsOfConnectedEntity {
         this.expression = expression;
         int offset = -12;
-        this.inputs = new HashMap<>();
-        for (Iterator<String> it = expression.getParameters().iterator(); it.hasNext(); ) {
-            String name = it.next();
-            inputs.put(name, new Input(this, offset));
-            offset += 8;
+
+        // if params changed, redefine inputs
+        List<String> parametersList = expression.getParameters().sorted().collect(Collectors.toList());
+        List<String> inputsList = getInputNames().sorted().collect(Collectors.toList());
+
+        if (!parametersList.equals(inputsList)) {
+            if (!this.isConnectedToAnything()) {
+                this.inputs = new HashMap<>();
+                for (String name : parametersList) {
+                    inputs.put(name, new Input(this, offset));
+                    offset += 8;
+                }
+            } else {
+                throw new CannotModifyInputsOfConnectedEntity();
+            }
         }
     }
 
-    public void setExpressionString(String str) throws ParseException {
+    public void setExpressionString(String str) throws ParseException, CannotModifyInputsOfConnectedEntity {
         Parser parser = new Parser();
         setExpression(parser.parse(str));
         this.expressionString = str;
@@ -115,5 +129,9 @@ public class CustomEntity extends Entity implements Serializable {
     @Override
     public Stream<String> getOuptutNames() {
         return Stream.of("y");
+    }
+
+    public class CannotModifyInputsOfConnectedEntity extends Exception {
+
     }
 }
