@@ -1,49 +1,80 @@
 package com.github.miro662.blazejsim.circuits.entities.custom.expression.parser;
 
-import com.github.miro662.blazejsim.circuits.entities.custom.expression.ConstantExpression;
-import com.github.miro662.blazejsim.circuits.entities.custom.expression.Expression;
-import com.github.miro662.blazejsim.circuits.entities.custom.expression.ParameterExpression;
+import com.github.miro662.blazejsim.circuits.entities.custom.expression.*;
 import com.github.miro662.blazejsim.simulation.LogicState;
 
+import java.util.HashMap;
+
 public class Parser {
+    public HashMap<Character, Operation> operations;
+
+    public Parser() {
+        operations = new HashMap<>();
+
+        operations.put('&', new Operation(1, AndExpression::new, Operation.Type.BINARY));
+        operations.put('|', new Operation(1, OrExpression::new, Operation.Type.BINARY));
+        operations.put('~', new Operation(2, ((left, right) -> new NotExpression(right)), Operation.Type.UNARY));
+    }
+
     public Expression parse(String str) throws ParseException {
         return parseFromTo(str, 0, str.length());
     }
 
-    private Expression parseFromTo(String str, int from, int to) throws ParseException {
+    Expression parseFromTo(String str, int from, int to) throws ParseException {
+        System.out.println("parse " + from + "-" + to);
         int length = to - from;
         if (length < 1) {
-            throw new ParseException();
+            throw new ParseException("Trying to parse empty expression", from);
         }
         if (length == 1) {
             // constant or parameter
             return getConstant(str.charAt(from));
         }
 
-        Object operation = null;
+        OperationInstance operationInstance = null;
 
-        int parentheisisCount = 0;
+        int parenthesesCount = 0;
+        Boolean inBrackets = true;
+
         for (int i = from; i < to; ++i) {
             char c = str.charAt(i);
             if (c == '(') {
-                parentheisisCount++;
+                parenthesesCount++;
             } else if (c == ')') {
-                parentheisisCount--;
-                if (parentheisisCount < 0) {
-                    throw new ParseException();
+                parenthesesCount--;
+                if (parenthesesCount == 0 && i != to - 1)
+                    inBrackets = false;
+                if (parenthesesCount < 0) {
+                    throw new ParseException("Cannot find corresponding opening parenthesis for closing one", i);
+                }
+            } else if (Character.isLetterOrDigit(c) || Character.isWhitespace(c)) {
+                // skip in such case
+            } else if (parenthesesCount == 0) {
+                Operation operation = operations.get(c);
+                if (operation != null) {
+                    OperationInstance proposed = operation.getInstance(i);
+                    if (operationInstance != null) {
+                        operationInstance = operationInstance.getOneWithLowerPriority(proposed);
+                    } else {
+                        operationInstance = proposed;
+                    }
                 }
             }
         }
 
-        if (parentheisisCount != 0) {
-            throw new ParseException();
+        if (parenthesesCount != 0) {
+            throw new ParseException("Unclosed parentheses", from);
         }
 
-        if (operation == null && str.charAt(from) == '(' && str.charAt(to - 1) == ')') {
+        if (inBrackets && str.charAt(from) == '(' && str.charAt(to - 1) == ')') {
             return parseFromTo(str, from + 1, to - 1);
         }
 
-        throw new ParseException();
+        if (operationInstance != null) {
+            return operationInstance.build(this, str, from, to);
+        } else {
+            throw new ParseException("Wrong operation", from);
+        }
     }
 
     private Expression getConstant(char character) throws ParseException {
@@ -58,7 +89,7 @@ public class Parser {
                 if (Character.isLowerCase(character)) {
                     return new ParameterExpression(Character.toString(character));
                 } else {
-                    throw new ParseException();
+                    throw new ParseException("TODO: clean", -1);
                 }
         }
     }

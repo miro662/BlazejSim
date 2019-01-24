@@ -8,11 +8,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 
-public class ExpressionWindow extends JDialog {
+public class ExpressionDialog extends JDialog {
     CustomEntity entity;
     JTextField expressionField;
 
-    ExpressionWindow(CircuitView view, CustomEntity entity) {
+    ExpressionDialog(CircuitView view, CustomEntity entity) {
         this.entity = entity;
 
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -31,7 +31,7 @@ public class ExpressionWindow extends JDialog {
                 dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
                 EventQueue.invokeLater(view::repaint);
             } catch (ParseException e) {
-                JOptionPane.showMessageDialog(this, "Parse error");
+                JOptionPane.showMessageDialog(this, e.getMessage() + ", at: " + e.getAt());
             }
         });
         this.add(saveButton, BorderLayout.PAGE_END);

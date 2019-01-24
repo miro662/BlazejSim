@@ -30,6 +30,6 @@ public final class CustomEntityView extends EntityView {
 
     @Override
     protected void onClick(Point offset, CircuitView circuitView) {
-        EventQueue.invokeLater(() -> new ExpressionWindow(circuitView, this.entity));
+        EventQueue.invokeLater(() -> new ExpressionDialog(circuitView, this.entity));
     }
 }
