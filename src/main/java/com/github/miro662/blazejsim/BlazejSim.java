@@ -19,7 +19,6 @@ public class BlazejSim {
 
     public static void main(String[] args) throws Circuit.NotFromCircuitException, Circuit.AlreadyConnectedInputException {
         Circuit circuit = new Circuit();
-
         EntityBase entityBase = new AnnotatedEntitiesBase();
         EventQueue.invokeLater(() -> new MainWindow(circuit, entityBase));
     }

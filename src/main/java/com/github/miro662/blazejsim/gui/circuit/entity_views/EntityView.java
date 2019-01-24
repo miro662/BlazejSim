@@ -24,6 +24,10 @@ public abstract class EntityView {
     public abstract void draw(Graphics2D g2d, int centerX, int centerY, SimulationState state);
 
     protected void drawPins(Graphics2D g2d, int centerX, int centerY) {
+        drawPins(g2d, centerX, centerY, false);
+    }
+
+    protected void drawPins(Graphics2D g2d, int centerX, int centerY, boolean printNames) {
         g2d.setColor(Parameters.pinColor);
 
         entity.getInputs().forEach((input -> {
@@ -31,6 +35,12 @@ public abstract class EntityView {
             int beginning = centerX - Parameters.getGateSize() / 2;
             int end = beginning - Parameters.pinSize;
             g2d.drawLine(beginning, vertical, end, vertical);
+            if (printNames) {
+                Font f = g2d.getFont();
+                f.deriveFont(6.0f);
+                g2d.setFont(f);
+                g2d.drawString(entity.getInputName(input), beginning + 2, vertical + 4);
+            }
         }));
 
         entity.getOutputs().forEach((input -> {

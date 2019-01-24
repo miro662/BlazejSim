@@ -40,6 +40,14 @@ public abstract class Entity implements Stepable, Serializable {
     @NotNull public abstract Stream<String> getInputNames();
 
     /**
+     * Get name of given input
+     * @return name of given input
+     */
+    public String getInputName(Input input) {
+        return getInputNames().filter(name -> getInput(name) == input).findFirst().orElse("?");
+    }
+
+    /**
      * Get output pin with given name.
      * If output pin with given name does not exist, returns null
      * @param name name of pin

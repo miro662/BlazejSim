@@ -17,7 +17,7 @@ public class CircuitTest {
     }
 
     @Test
-    void addAndDeleteEntity() {
+    void addAndDeleteEntity() throws Circuit.TryingToDeleteConnectedEntity {
         Entity entity = mock(Entity.class);
 
         circuit.addEntity(entity);
@@ -29,7 +29,7 @@ public class CircuitTest {
     }
 
     @Test
-    void deleteNotAddedEntity() {
+    void deleteNotAddedEntity() throws Circuit.TryingToDeleteConnectedEntity {
         Entity entity = mock(Entity.class);
         assertFalse(circuit.getEntities().anyMatch((e) -> e == entity));
 
