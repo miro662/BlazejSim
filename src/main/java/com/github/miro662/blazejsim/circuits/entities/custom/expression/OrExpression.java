@@ -5,6 +5,9 @@ import com.github.miro662.blazejsim.simulation.LogicState;
 import java.io.Serializable;
 import java.util.stream.Stream;
 
+/**
+ * Expression realising OR
+ */
 public class OrExpression implements Expression, Serializable {
     private Expression left;
     private Expression right;

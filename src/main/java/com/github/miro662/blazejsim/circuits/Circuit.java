@@ -97,6 +97,7 @@ public class Circuit implements Serializable {
     /**
      * Disconnects given output from all inputs and deletes related connection
      * @param output to be disconnected
+     * @throws NotFromCircuitException output belongs to entity which is not in this circuit
      */
     public void disconnect(Output output) throws NotFromCircuitException {
         checkInCircuit(output);
@@ -111,6 +112,8 @@ public class Circuit implements Serializable {
 
     /**
      * Disconnects given input, if no inputs connected to given connection deletes it too
+     * @param input input to disconnect
+     * @throws NotFromCircuitException output belongs to entity which is not in this circuit
      */
     public void disconnect(Input input) throws NotFromCircuitException {
         checkInCircuit(input);

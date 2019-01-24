@@ -41,7 +41,8 @@ public abstract class Entity implements Stepable, Serializable {
 
     /**
      * Get name of given input
-     * @return name of given input
+     * @param input input whose name should be retrieved
+     * @return name of given input or ? if entity does not have such input
      */
     public String getInputName(Input input) {
         return getInputNames().filter(name -> getInput(name) == input).findFirst().orElse("?");

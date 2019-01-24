@@ -5,6 +5,9 @@ import com.github.miro662.blazejsim.simulation.LogicState;
 
 import java.util.HashMap;
 
+/**
+ * Parses strings into expressions
+ */
 public class Parser {
     public HashMap<Character, Operation> operations;
 
@@ -16,6 +19,23 @@ public class Parser {
         operations.put('~', new Operation(2, ((left, right) -> new NotExpression(right)), Operation.Type.UNARY));
     }
 
+    /**
+     * Parse string into expression.
+     *
+     * Expression string syntax (by priority):
+     * underscore letters - parameters (ParameterExpression)
+     * 0/1/? - constants
+     * ~_ - NOT
+     * _&and;_ - AND
+     * _|_ - OR
+     *
+     * You can use parentheses to modify priority.
+     * Whitespaces are not allowed.
+     *
+     * @param str expression string
+     * @return expression build during parsing
+     * @throws ParseException when string is not correct
+     */
     public Expression parse(String str) throws ParseException {
         return parseFromTo(str, 0, str.length());
     }
@@ -46,8 +66,8 @@ public class Parser {
                 if (parenthesesCount < 0) {
                     throw new ParseException("Cannot find corresponding opening parenthesis for closing one", i);
                 }
-            } else if (Character.isLetterOrDigit(c) || Character.isWhitespace(c)) {
-                // skip in such case - whitespace or constant/parameter handled in other place
+            } else if (Character.isLetterOrDigit(c)) {
+                // skip in such case - constant/parameter handled in other place
             } else if (parenthesesCount == 0) {
                 Operation operation = operations.get(c);
                 if (operation != null) {

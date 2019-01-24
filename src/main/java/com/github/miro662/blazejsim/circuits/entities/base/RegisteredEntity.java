@@ -35,6 +35,7 @@ public class RegisteredEntity {
      * Create new RegisteredEntity using annotated Entity
      * @param entityClass entity class to be used to create RegisteredEntity instance
      * @return RegisteredEntity instance for given Entity class
+     * @throws UnannotatedEntityException entity does not have annotation containing its data
      */
     @NotNull
     public static RegisteredEntity fromAnnotatedEntity(@NotNull Class<? extends Entity> entityClass)

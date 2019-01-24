@@ -25,7 +25,6 @@ public class CircuitTest {
 
         circuit.deleteEntity(entity);
         assertFalse(circuit.getEntities().anyMatch((e) -> e == entity));
-        verify(entity).disconnectAll();
     }
 
     @Test

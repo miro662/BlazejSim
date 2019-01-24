@@ -2,16 +2,16 @@ package com.github.miro662.blazejsim.circuits.entities.custom.expression.parser;
 
 import com.github.miro662.blazejsim.circuits.entities.custom.expression.Expression;
 
-public class OperationInstance {
+class OperationInstance {
     private int at;
     private Operation operation;
 
-    public OperationInstance(int at, Operation operation) {
+    OperationInstance(int at, Operation operation) {
         this.at = at;
         this.operation = operation;
     }
 
-    public OperationInstance getOneWithLowerPriority(OperationInstance other) {
+    OperationInstance getOneWithLowerPriority(OperationInstance other) {
         if (operation == operation.getOneWithLowerPriority(other.operation)) {
             return this;
         } else {
@@ -19,7 +19,7 @@ public class OperationInstance {
         }
     }
 
-    public Expression build(Parser parser, String str, int from, int to) throws ParseException {
+    Expression build(Parser parser, String str, int from, int to) throws ParseException {
         Expression left = null;
         if (operation.type == Operation.Type.BINARY) {
             left = parser.parseFromTo(str, from, at);

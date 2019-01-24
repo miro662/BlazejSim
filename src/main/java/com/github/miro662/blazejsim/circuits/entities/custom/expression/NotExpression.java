@@ -5,6 +5,9 @@ import com.github.miro662.blazejsim.simulation.LogicState;
 import java.io.Serializable;
 import java.util.stream.Stream;
 
+/**
+ * Expression realising NOT
+ */
 public class NotExpression implements Expression, Serializable {
     private Expression expr;
 
